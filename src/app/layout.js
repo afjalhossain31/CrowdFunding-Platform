@@ -21,19 +21,14 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html
-      lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
-    >
-      <body className="min-h-screen flex flex-col bg-zinc-50 dark:bg-black dark:text-white">
+    <html lang="en">
+      <body 
+        className="min-h-screen flex flex-col bg-zinc-50 dark:bg-black dark:text-white"
+        suppressHydrationWarning={true} // <-- ঠিক এই লাইনটি <body> ট্যাগের ভেতরে দিতে হবে
+      >
         <AuthProvider>
           <Navbar />
-          
-          <main className="flex-grow flex flex-col w-full">
-            {children}
-          </main>
-          
-          <Footer />
+          {children}
         </AuthProvider>
       </body>
     </html>
