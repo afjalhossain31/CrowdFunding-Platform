@@ -72,7 +72,7 @@ async function run() {
         app.get('/campaigns', async (req, res) => {
             const result = await campaignsCollection.find().toArray();
             res.send(result);
-        });
+        }); 
 
 
         // Root Route
