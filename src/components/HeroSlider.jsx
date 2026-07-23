@@ -7,66 +7,85 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "swiper/css/effect-fade";
 import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 
 const slides = [
   {
     bgImage: "https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?q=80&w=1949&auto=format&fit=crop",
+    badge: "Empower Innovators",
     title: "Empower Innovators & Dreamers",
     subtitle: "Join a community that brings groundbreaking projects to life. Your support can turn a brilliant idea into reality.",
     buttonText: "Explore Campaigns",
-    buttonLink: "/campaigns",
+    buttonLink: "/explore-campaigns",
   },
   {
     bgImage: "https://images.unsplash.com/photo-1521737711867-e3b97375f902?q=80&w=1887&auto=format&fit=crop",
+    badge: "Launch & Grow",
     title: "Launch Your Creative Project",
     subtitle: "Have a unique idea? Our platform provides the tools and audience to help you raise funds and make it happen.",
     buttonText: "Start a Campaign",
-    buttonLink: "/create-campaign",
+    buttonLink: "/dashboard/add-campaign",
   },
   {
     bgImage: "https://images.unsplash.com/photo-1552664730-d307ca884978?q=80&w=2070&auto=format&fit=crop",
-    title: "Make a Difference, One Contribution at a Time",
+    badge: "Community Impact",
+    title: "Make a Difference, One Contribution",
     subtitle: "Support causes you care about, from community projects to technological innovations. Every contribution counts.",
-    buttonText: "Donate Now",
-    buttonLink: "/campaigns",
+    buttonText: "Explore Campaigns",
+    buttonLink: "/explore-campaigns",
   },
 ];
 
 export default function HeroSlider() {
   return (
-    <div className="h-[calc(100vh-80px)] w-full">
+    <div className="relative h-[calc(100vh-80px)] min-h-[550px] w-full overflow-hidden">
       <Swiper
         modules={[Navigation, Pagination, Autoplay, EffectFade]}
         spaceBetween={0}
         slidesPerView={1}
-        navigation
+        navigation={true}
         pagination={{ clickable: true }}
         autoplay={{ delay: 5000, disableOnInteraction: false }}
         effect="fade"
         fadeEffect={{ crossFade: true }}
         loop={true}
-        className="h-full w-full"
+        className="h-full w-full hero-swiper"
       >
         {slides.map((slide, index) => (
           <SwiperSlide key={index}>
             <div
-              className="h-full w-full bg-cover bg-center"
+              className="relative h-full w-full bg-cover bg-center flex items-center"
               style={{ backgroundImage: `url(${slide.bgImage})` }}
             >
-              <div className="h-full w-full bg-black bg-opacity-50 flex items-center justify-center text-center">
-                <div className="max-w-3xl mx-auto px-4 text-white">
-                  <h1 className="text-4xl md:text-6xl font-bold mb-4 animate-fade-in-down">
+              {/* Premium Gradient Overlay */}
+              <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-black/30 z-10" />
+
+              <div className="relative z-20 max-w-7xl mx-auto px-6 sm:px-12 lg:px-16 w-full text-white">
+                <div className="max-w-2xl">
+                  {/* Badge */}
+                  <span className="inline-block bg-blue-600/90 text-white text-xs font-bold uppercase tracking-wider px-3.5 py-1.5 rounded-full mb-4 shadow-sm backdrop-blur-sm">
+                    {slide.badge}
+                  </span>
+
+                  {/* Title */}
+                  <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight mb-4 leading-tight">
                     {slide.title}
                   </h1>
-                  <p className="text-lg md:text-xl mb-8 animate-fade-in-up">
+
+                  {/* Subtitle */}
+                  <p className="text-base sm:text-lg text-gray-200 mb-8 leading-relaxed font-normal">
                     {slide.subtitle}
                   </p>
-                  <Link
-                    href={slide.buttonLink}
-                    className="bg-indigo-600 text-white font-semibold px-8 py-4 rounded-md hover:bg-indigo-700 transition-transform transform hover:scale-105"
-                  >
-                    {slide.buttonText}
-                  </Link>
+
+                  {/* Action Button */}
+                  <div>
+                    <Link
+                      href={slide.buttonLink}
+                      className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold px-7 py-3.5 rounded-xl hover:from-blue-700 hover:to-indigo-700 transition-all shadow-lg shadow-blue-600/30 active:scale-95"
+                    >
+                      {slide.buttonText} <ArrowRight size={18} />
+                    </Link>
+                  </div>
                 </div>
               </div>
             </div>

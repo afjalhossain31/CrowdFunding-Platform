@@ -1,102 +1,160 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Autoplay, Pagination, Navigation } from "swiper/modules";
+import { Autoplay, Pagination, Navigation, EffectFade } from "swiper/modules";
+import { ArrowRight, CheckCircle2, TrendingUp, Users, ShieldCheck, Award } from "lucide-react";
+import TopCampaignsSection from "@/components/TopCampaigns"; // <-- এভাবে ইমপোর্ট করো
 
 // Swiper styles
 import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
+import "swiper/css/effect-fade";
+
+const slides = [
+  {
+    bgImage: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=2070&auto=format&fit=crop",
+    badge: "ULTIMATE CROWDFUNDING PLATFORM",
+    title: "Raising Money Has Never Been Easy",
+    subtitle: "Discover projects just for you and get great recommendations when you select your interests.",
+    buttonText: "EXPLORE PROJECTS",
+    buttonLink: "/explore-campaigns",
+  },
+  {
+    bgImage: "https://images.unsplash.com/photo-1531482615713-2afd69097998?q=80&w=2070&auto=format&fit=crop",
+    badge: "EMPOWER CREATORS & INNOVATORS",
+    title: "Turn Your Vision Into Reality",
+    subtitle: "Launch your campaign, connect with global supporters, and raise funds securely.",
+    buttonText: "START A CAMPAIGN",
+    buttonLink: "/dashboard/add-campaign",
+  },
+];
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black dark:text-white w-full">
-      
-      {/* 1. Hero Section (Slider) */}
-      <section className="w-full h-[60vh] md:h-[80vh]">
+    <div className="flex flex-col min-h-screen bg-white dark:bg-zinc-950 font-sans text-slate-900 dark:text-slate-100 w-full overflow-hidden">
+
+      {/* 1. Hero Section (Inspiried by your design) */}
+      <section className="w-full h-[calc(100vh-80px)] min-h-[550px] relative">
         <Swiper
           spaceBetween={0}
+          effect="fade"
           centeredSlides={true}
           autoplay={{
-            delay: 3500,
+            delay: 4500,
             disableOnInteraction: false,
           }}
-          pagination={{
-            clickable: true,
-          }}
+          pagination={{ clickable: true }}
           navigation={true}
-          modules={[Autoplay, Pagination, Navigation]}
-          className="w-full h-full"
+          modules={[Autoplay, Pagination, Navigation, EffectFade]}
+          className="w-full h-full hero-swiper"
         >
-          {/* Slide 1 */}
-          <SwiperSlide>
-            <div className="flex flex-col items-center justify-center w-full h-full bg-blue-600 text-white p-6 text-center">
-              <h1 className="text-4xl md:text-6xl font-bold mb-4">Empower Innovation</h1>
-              <p className="text-lg md:text-2xl max-w-2xl">Support groundbreaking tech and creative projects today and help shape the future.</p>
-              <Link href="/explore" className="mt-8 px-6 py-3 bg-white text-blue-600 font-semibold rounded-md hover:bg-gray-100 transition">
-                Explore Campaigns
-              </Link>
-            </div>
-          </SwiperSlide>
+          {slides.map((slide, index) => (
+            <SwiperSlide key={index}>
+              <div
+                className="relative flex items-center justify-center w-full h-full bg-cover bg-center"
+                style={{ backgroundImage: `url(${slide.bgImage})` }}
+              >
+                {/* Dark Overlay */}
+                <div className="absolute inset-0 bg-slate-900/75 backdrop-blur-[1px]"></div>
 
-          {/* Slide 2 */}
-          <SwiperSlide>
-            <div className="flex flex-col items-center justify-center w-full h-full bg-green-600 text-white p-6 text-center">
-              <h1 className="text-4xl md:text-6xl font-bold mb-4">Community First</h1>
-              <p className="text-lg md:text-2xl max-w-2xl">Fund local causes, support those in need, and help communities thrive together.</p>
-              <Link href="/explore" className="mt-8 px-6 py-3 bg-white text-green-600 font-semibold rounded-md hover:bg-gray-100 transition">
-                Start Contributing
-              </Link>
-            </div>
-          </SwiperSlide>
+                {/* Content */}
+                <div className="relative z-10 max-w-4xl mx-auto px-6 text-center text-white flex flex-col items-center">
 
-          {/* Slide 3 */}
-          <SwiperSlide>
-            <div className="flex flex-col items-center justify-center w-full h-full bg-purple-600 text-white p-6 text-center">
-              <h1 className="text-4xl md:text-6xl font-bold mb-4">Creative Arts</h1>
-              <p className="text-lg md:text-2xl max-w-2xl">Bring independent films, music, fashion brands, and beautiful art to life.</p>
-              <Link href="/register" className="mt-8 px-6 py-3 bg-white text-purple-600 font-semibold rounded-md hover:bg-gray-100 transition">
-                Join as a Creator
-              </Link>
-            </div>
-          </SwiperSlide>
+                  {/* Top Badge (Green Ribbon Style from image) */}
+                  <div className="inline-block bg-emerald-500 text-zinc-950 font-bold text-xs sm:text-sm uppercase tracking-wider px-5 py-1.5 rounded-sm shadow-md mb-6 transform -skew-x-6">
+                    <span className="transform skew-x-6">{slide.badge}</span>
+                  </div>
+
+                  {/* Title */}
+                  <h1 className="text-4xl sm:text-6xl md:text-7xl font-extrabold tracking-tight leading-tight mb-6">
+                    {slide.title}
+                  </h1>
+
+                  {/* Subtitle */}
+                  <p className="text-base sm:text-xl text-slate-200 max-w-2xl font-normal leading-relaxed mb-8">
+                    {slide.subtitle}
+                  </p>
+
+                  {/* Yellow CTA Button from image */}
+                  <Link
+                    href={slide.buttonLink}
+                    className="inline-flex items-center gap-2 px-8 py-3.5 bg-amber-400 hover:bg-amber-300 text-zinc-950 font-bold text-sm uppercase tracking-wider rounded-md shadow-lg transition-all hover:scale-105 active:scale-95"
+                  >
+                    {slide.buttonText}
+                  </Link>
+
+                </div>
+              </div>
+            </SwiperSlide>
+          ))}
         </Swiper>
       </section>
 
-      {/* 2. Top Funded Campaigns (Placeholder) */}
-      <section className="py-20 px-4 md:px-8 max-w-7xl mx-auto w-full">
-        <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">Top Funded Campaigns</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {/* Card placeholders - we will fetch actual data from backend later */}
-          <div className="p-10 bg-white dark:bg-zinc-900 shadow-md rounded-lg text-center border dark:border-zinc-800">
-            <h3 className="font-semibold text-lg">Campaign 1</h3>
-            <p className="text-gray-500 mt-2">Data coming soon...</p>
+      {/* Top Funded Campaigns Section (Matching your requirement & design) */}
+      <TopCampaignsSection />
+
+
+
+      {/* 3. Yellow Counter/Impact Section (Matching your screenshot) */}
+      <section className="bg-amber-400 py-16 px-4 text-zinc-900 relative overflow-hidden">
+        <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 text-center relative z-10">
+          <div>
+            <div className="text-4xl md:text-5xl font-black mb-1">84k</div>
+            <div className="text-sm font-bold uppercase tracking-wider text-zinc-800">Projects are Completed</div>
           </div>
-          <div className="p-10 bg-white dark:bg-zinc-900 shadow-md rounded-lg text-center border dark:border-zinc-800">
-            <h3 className="font-semibold text-lg">Campaign 2</h3>
-            <p className="text-gray-500 mt-2">Data coming soon...</p>
+          <div>
+            <div className="text-4xl md:text-5xl font-black mb-1">22k</div>
+            <div className="text-sm font-bold uppercase tracking-wider text-zinc-800">Ideas Raised Funds</div>
           </div>
-          <div className="p-10 bg-white dark:bg-zinc-900 shadow-md rounded-lg text-center border dark:border-zinc-800">
-            <h3 className="font-semibold text-lg">Campaign 3</h3>
-            <p className="text-gray-500 mt-2">Data coming soon...</p>
+          <div>
+            <div className="text-4xl md:text-5xl font-black mb-1">17k</div>
+            <div className="text-sm font-bold uppercase tracking-wider text-zinc-800">Categories Served</div>
+          </div>
+          <div>
+            <div className="text-4xl md:text-5xl font-black mb-1">88k</div>
+            <div className="text-sm font-bold uppercase tracking-wider text-zinc-800">Happy Customers</div>
           </div>
         </div>
       </section>
 
-      {/* 3. Testimonial Section (Placeholder) */}
-      <section className="py-20 bg-gray-100 dark:bg-zinc-900 w-full px-4">
-        <div className="max-w-5xl mx-auto text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-8">What Our Users Say</h2>
-          <p className="text-gray-600 dark:text-gray-400">Testimonial Slider will be implemented here.</p>
-        </div>
-      </section>
+      {/* 4. We Help at Every Step Section (Matching your screenshot) */}
+      <section className="bg-slate-800 text-white py-20 px-4 md:px-8 relative overflow-hidden">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+          <div>
+            <h2 className="text-3xl md:text-4xl font-extrabold mb-4 leading-tight">
+              We Help at Every Step from Concept to Market
+            </h2>
+            <p className="text-slate-300 text-sm mb-8 leading-relaxed">
+              Discover projects just for you and get great recommendations when you select your interests.
+            </p>
 
-      {/* 4. Extra Sections (Placeholders) */}
-      <section className="py-20 px-4 md:px-8 max-w-7xl mx-auto w-full text-center">
-        <h2 className="text-3xl font-bold mb-6">How It Works</h2>
-        <p className="text-gray-600 dark:text-gray-400">Sign Up - Launch Campaign - Get Funded.</p>
+            <ul className="space-y-4 text-sm font-medium">
+              <li className="flex items-center gap-3">
+                <CheckCircle2 className="text-amber-400 shrink-0" size={20} />
+                Raise funds with a crowdfunding campaign
+              </li>
+              <li className="flex items-center gap-3">
+                <CheckCircle2 className="text-amber-400 shrink-0" size={20} />
+                Extend your campaign with InDemand
+              </li>
+              <li className="flex items-center gap-3">
+                <CheckCircle2 className="text-amber-400 shrink-0" size={20} />
+                Fast track to the global market
+              </li>
+            </ul>
+          </div>
+
+          <div className="relative">
+            <div className="rounded-2xl overflow-hidden shadow-2xl border border-slate-700">
+              <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=800&auto=format&fit=crop" alt="experts" className="w-full h-80 object-cover" />
+            </div>
+            <div className="absolute -bottom-6 -left-6 bg-emerald-500 text-zinc-950 p-6 rounded-xl shadow-xl max-w-xs font-bold text-sm hidden sm:block">
+              All the Right Experts to Help Your Business
+            </div>
+          </div>
+        </div>
       </section>
 
     </div>

@@ -1,7 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import { Bell } from "lucide-react";
-import axiosSecure from "@/lib/axiosSecure";
 
 export default function NotificationBell() {
   const [open, setOpen] = useState(false);

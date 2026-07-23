@@ -2,7 +2,6 @@
 import Link from "next/link";
 import useAuth from "@/hooks/useAuth";
 import { useEffect, useState } from "react";
-import axiosSecure from "@/lib/axiosSecure";
 import NotificationBell from "./NotificationBell";
 
 export default function Navbar() {

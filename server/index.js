@@ -1,92 +1,137 @@
-const express = require('express');
-const cors = require('cors');
-require('dotenv').config();
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const express = require("express");
+const cors = require("cors");
+require("dotenv").config();
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb"); // <-- ObjectId এখানে যুক্ত করা হয়েছে
 
 const app = express();
 const port = process.env.PORT || 5000;
 
 // Middleware
-app.use(cors());
+app.use(
+    cors({
+        origin: "http://localhost:3000",
+        credentials: true,
+    })
+);
 app.use(express.json());
 
-// MongoDB URI from .env file
+// MongoDB URI
 const uri = process.env.MONGODB_URI;
 
-// Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
     serverApi: {
         version: ServerApiVersion.v1,
         strict: true,
         deprecationErrors: true,
-    }
+    },
 });
 
 async function run() {
     try {
-        // Connect the client to the server	(optional starting in v4.7)
         await client.connect();
+        console.log("✅ Connected to MongoDB");
 
-        // Send a ping to confirm a successful connection
-        await client.db("admin").command({ ping: 1 });
-        console.log("Pinged your deployment. You successfully connected to MongoDB!");
-
-        // Database and Collections Setup
-        // ==========================================
         const db = client.db("CrowdFunding");
         const usersCollection = db.collection("users");
         const campaignsCollection = db.collection("campaigns");
 
-        // API Routes will go here
-        // ==========================================
+        // =========================
+        // User Routes
+        // =========================
 
-        // 1. Save User Data to Database
-        app.post('/users', async (req, res) => {
+        // Save User
+        app.post("/users", async (req, res) => {
             const user = req.body;
-            // চেক করা হচ্ছে ইউজার আগে থেকেই ডাটাবেসে আছে কি না
-            const query = { email: user.email };
-            const existingUser = await usersCollection.findOne(query);
+            const existingUser = await usersCollection.findOne({
+                email: user.email,
+            });
 
             if (existingUser) {
-                return res.send({ message: 'User already exists', insertedId: null });
+                return res.send({
+                    message: "User already exists",
+                    insertedId: null,
+                });
             }
 
             const result = await usersCollection.insertOne(user);
             res.send(result);
         });
 
-        // 2. Get All Users (এডমিন ড্যাশবোর্ডের জন্য কাজে লাগবে)
-        app.get('/users', async (req, res) => {
+        // Get All Users
+        app.get("/users", async (req, res) => {
             const result = await usersCollection.find().toArray();
             res.send(result);
         });
 
-        // 3. Create a New Campaign
-        app.post('/campaigns', async (req, res) => {
-            const newCampaign = req.body;
-            const result = await campaignsCollection.insertOne(newCampaign);
+        // Get Single User
+        app.get("/users/:email", async (req, res) => {
+            const email = req.params.email;
+            const result = await usersCollection.findOne({ email });
             res.send(result);
         });
 
-        // 4. Get All Campaigns (হোমপেইজে দেখানোর জন্য)
-        app.get('/campaigns', async (req, res) => {
+        // =========================
+        // Campaign Routes
+        // =========================
+
+        // Create Campaign
+        app.post("/campaigns", async (req, res) => {
+            const campaign = req.body;
+            const result = await campaignsCollection.insertOne(campaign);
+            res.send(result);
+        });
+
+        // Get All Campaigns
+        app.get("/campaigns", async (req, res) => {
             const result = await campaignsCollection.find().toArray();
             res.send(result);
-        }); 
-
-
-        // Root Route
-        app.get('/', (req, res) => {
-            res.send('Crowdfunding Server is running...');
         });
 
-    } finally {
-        // Ensures that the client will close when you finish/error
-        // await client.close();
+        // Top Campaigns (Home page এর ৬টি কার্ডের জন্য)
+        // [⚠️ ശ്രദ്ധ করো: Express-এ নির্দিষ্ট রাউটগুলো সবসময় :id বা ডাইনামিক রাউটের উপরে রাখতে হয়]
+        app.get("/campaigns/top", async (req, res) => {
+            const result = await campaignsCollection
+                .find()
+                .sort({ raised_amount: -1 })
+                .limit(6)
+                .toArray();
+            res.send(result);
+        });
+
+        // Get a Single Campaign by ID (ডাইনামিক ডিটেইলস পেজের জন্য)
+        app.get("/campaigns/:id", async (req, res) => {
+            const id = req.params.id;
+            try {
+                // চেক করা হচ্ছে আইডিটি সঠিক ফরম্যাটের কি না
+                if (!ObjectId.isValid(id)) {
+                    return res.status(400).send({ error: "Invalid Campaign ID" });
+                }
+                const query = { _id: new ObjectId(id) };
+                const result = await campaignsCollection.findOne(query);
+                
+                if (!result) {
+                    return res.status(404).send({ error: "Campaign not found" });
+                }
+                res.send(result);
+            } catch (error) {
+                res.status(500).send({ error: "Server error while fetching campaign" });
+            }
+        });
+
+        // Root
+        app.get("/", (req, res) => {
+            res.send("🚀 Crowdfunding Server is Running");
+        });
+
+        await client.db("admin").command({ ping: 1 });
+        console.log("✅ MongoDB Ping Successful");
+    } catch (error) {
+        console.error(error);
     }
 }
-run().catch(console.dir);
+
+run();
 
 app.listen(port, () => {
-    console.log(`Server is running on port: ${port}`);
+    console.log(`🚀 Server running on port ${port}`);
 });

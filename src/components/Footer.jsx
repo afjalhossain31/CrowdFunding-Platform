@@ -1,48 +1,90 @@
+"use client";
+
 import Link from "next/link";
-import { FaGithub, FaLinkedin, FaFacebook } from "react-icons/fa";
+import { FaFacebookF, FaTwitter, FaInstagram, FaPinterestP } from "react-icons/fa";
 
 export default function Footer() {
   return (
-    <footer className="bg-slate-100 dark:bg-dark-primary py-8 border-t border-slate-200 dark:border-slate-800 mt-auto">
-      <div className="max-w-7xl mx-auto px-4 md:px-8 grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left">
+    <footer className="bg-[#212b36] text-slate-300 pt-16 pb-8 border-t border-slate-800">
+      <div className="max-w-7xl mx-auto px-4 md:px-8 grid grid-cols-1 md:grid-cols-5 gap-10 pb-16 border-b border-slate-700/60">
         
-        {/* Brand Info */}
-        <div>
-          <h2 className="text-xl font-bold text-indigo-600 dark:text-indigo-400">CrowdFund</h2>
-          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1 max-w-sm">
-            Empowering ideas and shaping the future through community-driven funding.
+        {/* Newsletter Column */}
+        <div className="md:col-span-2">
+          <h3 className="text-white font-bold text-lg mb-4">Newsletter</h3>
+          <p className="text-sm text-slate-400 mb-6 leading-relaxed">
+            Join us in our mission! Subscribe to our weekly email campaigns to stay updated with new projects.
           </p>
+          <form onSubmit={(e) => e.preventDefault()} className="flex flex-col sm:flex-row gap-2 max-w-md">
+            <input 
+              type="email" 
+              placeholder="Your email address" 
+              className="bg-white text-zinc-900 px-4 py-3 rounded text-sm focus:outline-none w-full"
+            />
+            <button 
+              type="submit" 
+              className="bg-amber-400 hover:bg-amber-300 text-zinc-950 font-bold px-6 py-3 rounded text-sm uppercase tracking-wider transition shadow-sm shrink-0"
+            >
+              Sign up
+            </button>
+          </form>
         </div>
 
-        {/* Quick Links - Centered */}
-        <div className="flex flex-col gap-2 text-sm font-medium text-slate-600 dark:text-slate-300 items-center md:items-start">
-          <h3 className="font-bold text-slate-800 dark:text-slate-100 mb-2">Quick Links</h3>
-          <Link href="/about" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition">About Us</Link>
-          <Link href="/contact" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition">Contact</Link>
-          <Link href="/terms" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition">Terms of Service</Link>
+        {/* Get Started Column */}
+        <div>
+          <h3 className="text-white font-bold text-base mb-4">Get Started</h3>
+          <ul className="space-y-3 text-sm">
+            <li><Link href="/news" className="hover:text-amber-400 transition">News</Link></li>
+            <li><Link href="/explore-campaigns" className="hover:text-amber-400 transition">Explore</Link></li>
+            <li><Link href="/faqs" className="hover:text-amber-400 transition">FAQs</Link></li>
+            <li><Link href="/about" className="hover:text-amber-400 transition">About</Link></li>
+            <li><Link href="/cart" className="hover:text-amber-400 transition">Shopping Cart</Link></li>
+          </ul>
         </div>
 
-        {/* Social Media Links - Right Aligned */}
-        <div className="flex flex-col items-center md:items-end">
-          <h3 className="font-bold text-slate-800 dark:text-slate-100 mb-2">Follow Us</h3>
-          <div className="flex gap-5 text-2xl text-slate-500 dark:text-slate-400">
-            <a href="https://github.com/afjalhossain31" target="_blank" rel="noopener noreferrer" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition">
-              <FaGithub />
-            </a>
-            <a href="https://www.linkedin.com/in/your-profile" target="_blank" rel="noopener noreferrer" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition">
-              <FaLinkedin />
-            </a>
-            <a href="https://www.facebook.com/your-profile" target="_blank" rel="noopener noreferrer" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition">
-              <FaFacebook />
-            </a>
-          </div>
+        {/* Dashboard Column */}
+        <div>
+          <h3 className="text-white font-bold text-base mb-4">Dashboard</h3>
+          <ul className="space-y-3 text-sm">
+            <li><Link href="/dashboard" className="hover:text-amber-400 transition">Dashboard</Link></li>
+            <li><Link href="/login" className="hover:text-amber-400 transition">Login</Link></li>
+            <li><Link href="/register" className="hover:text-amber-400 transition">Register</Link></li>
+            <li><Link href="/dashboard/add-campaign" className="hover:text-amber-400 transition">Start a Project</Link></li>
+            <li><Link href="/contact" className="hover:text-amber-400 transition">Contact</Link></li>
+          </ul>
+        </div>
+
+        {/* Explore Column */}
+        <div>
+          <h3 className="text-white font-bold text-base mb-4">Explore</h3>
+          <ul className="space-y-3 text-sm">
+            <li><Link href="/explore-campaigns?category=Education" className="hover:text-amber-400 transition">Education</Link></li>
+            <li><Link href="/explore-campaigns?category=Film" className="hover:text-amber-400 transition">Film & Video</Link></li>
+            <li><Link href="/explore-campaigns?category=Food" className="hover:text-amber-400 transition">Food</Link></li>
+            <li><Link href="/explore-campaigns?category=Games" className="hover:text-amber-400 transition">Games</Link></li>
+            <li><Link href="/explore-campaigns?category=Technology" className="hover:text-amber-400 transition">Technology</Link></li>
+          </ul>
         </div>
 
       </div>
       
-      {/* Copyright */}
-      <div className="text-center text-slate-500 dark:text-slate-400 text-sm mt-8 border-t border-slate-200 dark:border-slate-800 pt-4 max-w-7xl mx-auto px-4">
-        &copy; {new Date().getFullYear()} CrowdFund Platform. All rights reserved.
+      {/* Copyright and Social Icons Bottom Bar */}
+      <div className="max-w-7xl mx-auto px-4 md:px-8 pt-8 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-400">
+        <p>&copy; {new Date().getFullYear()} FundRise Platform. All rights reserved.</p>
+        
+        <div className="flex items-center gap-4 mt-4 sm:mt-0 text-slate-300">
+          <a href="https://facebook.com" target="_blank" rel="noreferrer" className="hover:text-amber-400 transition">
+            <FaFacebookF size={14} />
+          </a>
+          <a href="https://twitter.com" target="_blank" rel="noreferrer" className="hover:text-amber-400 transition">
+            <FaTwitter size={14} />
+          </a>
+          <a href="https://instagram.com" target="_blank" rel="noreferrer" className="hover:text-amber-400 transition">
+            <FaInstagram size={14} />
+          </a>
+          <a href="https://pinterest.com" target="_blank" rel="noreferrer" className="hover:text-amber-400 transition">
+            <FaPinterestP size={14} />
+          </a>
+        </div>
       </div>
     </footer>
   );

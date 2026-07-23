@@ -24,3 +24,26 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* Swiper Custom Navigation Button Style */
+.hero-swiper .swiper-button-next,
+.hero-swiper .swiper-button-prev {
+  color: #ffffff !important;
+  background: rgba(0, 0, 0, 0.3);
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  backdrop-filter: blur(4px);
+}
+
+.hero-swiper .swiper-button-next:after,
+.hero-swiper .swiper-button-prev:after {
+  font-size: 18px !important;
+  font-weight: bold;
+}
+
+.hero-swiper .swiper-pagination-bullet-active {
+  background: #f59e0b !important; /* Amber Yellow active bullet */
+  width: 24px;
+  border-radius: 4px;
+}
