@@ -13,7 +13,7 @@ export default function NotFound() {
       <div className="relative z-10 bg-white/70 backdrop-blur-xl border border-white p-8 md:p-14 rounded-3xl shadow-[0_20px_50px_rgba(8,_112,_184,_0.07)] max-w-2xl text-center w-full">
         
         {/* 404 Glowing Gradient Text */}
-        <h1 className="text-[120px] md:text-[180px] leading-none font-black text-transparent bg-clip-text bg-gradient-to-br from-blue-600 via-blue-500 to-purple-600 drop-shadow-sm select-none">
+        <h1 className="text-[120px] md:text-[180px] leading-none font-black text-transparent bg-clip-text bg-gradient-to-br from-green-600 via-green-500 to-purple-600 drop-shadow-sm select-none">
           404
         </h1>
 
