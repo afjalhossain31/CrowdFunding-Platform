@@ -67,7 +67,6 @@ export default function TopCampaigns() {
               return (
                 <motion.div
                   key={campaign._id}
-                  // নতুন অ্যানিমেশন: নিচ থেকে হালকা জুম হয়ে ভেসে উঠবে
                   initial={{ opacity: 0, y: 30, scale: 0.95 }} 
                   whileInView={{ opacity: 1, y: 0, scale: 1 }}
                   viewport={{ once: true, amount: 0.1 }}
@@ -95,7 +94,7 @@ export default function TopCampaigns() {
                   <div className="pt-6 pb-5 px-5 flex-1 flex flex-col">
                     
                     <div className="text-xs text-slate-400 mb-1.5">
-                      by <span className="text-emerald-500 font-medium">{campaign.creator_name || "Jane Smith"}</span>
+                      by <span className="text-emerald-500 font-medium">{campaign.creator_name || "Jonas Smith"}</span>
                     </div>
 
                     <Link href={`/campaigns/${campaign._id}`}>
