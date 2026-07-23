@@ -1,9 +1,9 @@
 "use client";
 
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation, Pagination, Autoplay, EffectFade } from "swiper/modules";
+// Navigation মডিউল পুরোপুরি বাদ দেওয়া হয়েছে
+import { Pagination, Autoplay, EffectFade } from "swiper/modules"; 
 import "swiper/css";
-import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "swiper/css/effect-fade";
 import Link from "next/link";
@@ -40,13 +40,13 @@ export default function HeroSlider() {
   return (
     <div className="relative h-[calc(100vh-80px)] min-h-[550px] w-full overflow-hidden">
       <Swiper
-        modules={[Navigation, Pagination, Autoplay, EffectFade]}
+        modules={[Pagination, Autoplay, EffectFade]}
         spaceBetween={0}
         slidesPerView={1}
-        navigation={true}
+        /* navigation={false} লেখাও বাদ দিয়েছি, যাতে ট্রিগার না হয় */
         pagination={{ clickable: true }}
         autoplay={{ delay: 5000, disableOnInteraction: false }}
-        effect="fade"
+        effect="effect-fade"
         fadeEffect={{ crossFade: true }}
         loop={true}
         className="h-full w-full hero-swiper"

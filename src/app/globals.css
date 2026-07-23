@@ -25,25 +25,46 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
-/* Swiper Custom Navigation Button Style */
+/* Swiper Hero Navigation Customization */
 .hero-swiper .swiper-button-next,
 .hero-swiper .swiper-button-prev {
   color: #ffffff !important;
-  background: rgba(0, 0, 0, 0.3);
+  background: rgba(0, 0, 0, 0.4);
   width: 45px;
   height: 45px;
   border-radius: 50%;
   backdrop-filter: blur(4px);
+  transition: all 0.3s ease;
 }
 
-.hero-swiper .swiper-button-next:after,
-.hero-swiper .swiper-button-prev:after {
-  font-size: 18px !important;
+.hero-swiper .swiper-button-next:hover,
+.hero-swiper .swiper-button-prev:hover {
+  background: rgba(37, 99, 235, 0.8); /* Blue hover effect */
+  transform: scale(1.05);
+}
+
+.hero-swiper .swiper-button-next::after,
+.hero-swiper .swiper-button-prev::after {
+  font-size: 16px !important;
   font-weight: bold;
 }
 
+.hero-swiper .swiper-pagination-bullet {
+  background: #ffffff !important;
+  opacity: 0.5;
+  width: 10px;
+  height: 10px;
+}
+
 .hero-swiper .swiper-pagination-bullet-active {
-  background: #f59e0b !important; /* Amber Yellow active bullet */
+  opacity: 1;
+  background: #2563eb !important; /* Blue active dot */
   width: 24px;
-  border-radius: 4px;
+  border-radius: 5px;
+}
+
+/* Force hide Swiper navigation arrows */
+.swiper-button-next,
+.swiper-button-prev {
+  display: none !important;
 }
