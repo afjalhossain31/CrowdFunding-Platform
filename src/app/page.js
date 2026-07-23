@@ -3,11 +3,13 @@
 import Link from "next/link";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Pagination, Navigation, EffectFade } from "swiper/modules";
-import { ArrowRight, CheckCircle2, TrendingUp, Users, ShieldCheck, Award } from "lucide-react";
-import { motion } from "framer-motion"; // <-- Framer Motion ইমপোর্ট করা হলো
 
+import { ArrowRight, CheckCircle2, TrendingUp, Users, ShieldCheck, Award } from "lucide-react";
+
+import { motion } from "framer-motion";
 import TopCampaignsSection from "@/components/TopCampaigns";
 import WeHelpSection from "@/components/WeHelpSection";
+import Testimonials from "@/components/Testimonials";
 
 // Swiper styles
 import "swiper/css";
@@ -166,6 +168,7 @@ export default function Home() {
 
       {/* 4. We Help at Every Step Section */}
       <WeHelpSection />
+      <Testimonials/>
 
 
 

@@ -9,13 +9,59 @@ export default function Navbar() {
 
   return (
     <nav className="bg-white shadow-sm border-b border-slate-200 py-4 px-6 md:px-12 flex justify-between items-center">
+
+
+{/* Website Logo */}
+<Link href="/" className="flex items-center gap-2.5 group outline-none">
+  {/* Custom SVG Logo Icon (Inspired by your reference) */}
+  <div className="relative flex items-center justify-center">
+    <svg 
+      className="w-10 h-10 text-emerald-600 transform transition-transform duration-300 group-hover:scale-105" 
+      viewBox="0 0 32 32" 
+      fill="none" 
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      {/* Left Small Building */}
+      <path d="M4 16H10V26.5C7 26 5 26.2 4 26.5V16Z" fill="currentColor" />
+      <rect x="5.5" y="18.5" width="3" height="2.5" rx="0.5" fill="white" />
+      <rect x="5.5" y="22.5" width="3" height="2.5" rx="0.5" fill="white" />
+
+      {/* Middle Medium Building */}
+      <path d="M12 10H19V26C16 25.3 14 25.3 12 26V10Z" fill="currentColor" />
+      <rect x="14" y="12.5" width="3" height="2.5" rx="0.5" fill="white" />
+      <rect x="14" y="16.5" width="3" height="2.5" rx="0.5" fill="white" />
+      <rect x="14" y="20.5" width="3" height="2.5" rx="0.5" fill="white" />
+
+      {/* Right Tall Building */}
+      <path d="M21 4H28V26.5C25 26.2 23 26 21 26.5V4Z" fill="currentColor" />
+      <rect x="23" y="6.5" width="3" height="2.5" rx="0.5" fill="white" />
+      <rect x="23" y="10.5" width="3" height="2.5" rx="0.5" fill="white" />
+      <rect x="23" y="14.5" width="3" height="2.5" rx="0.5" fill="white" />
+      <rect x="23" y="18.5" width="3" height="2.5" rx="0.5" fill="white" />
+      <rect x="23" y="22.5" width="3" height="2.5" rx="0.5" fill="white" />
       
-      {/* Website Logo */}
-      <Link href="/">
-        <h1 className="text-2xl font-extrabold text-emerald-600 cursor-pointer">
-          CROWDFUND
-        </h1>
-      </Link>
+      {/* Bottom Connecting Arc */}
+      <path 
+        d="M3 28.5C11 26.5 21 26.5 29 28.5" 
+        stroke="currentColor" 
+        strokeWidth="2.5" 
+        strokeLinecap="round" 
+      />
+    </svg>
+  </div>
+
+  {/* Typography - Styled to look like a brand image */}
+  <div className="flex flex-col">
+    <h1 className="text-2xl md:text-[26px] font-black tracking-[0.15em] text-gray-900 leading-none">
+      CROWD<span className="text-emerald-600">FUND</span>
+    </h1>
+    <span className="text-[10px] font-semibold text-gray-500 tracking-[0.3em] uppercase mt-1">
+      Platform
+    </span>
+  </div>
+</Link>
+
+
 
       {/* Navigation Links */}
       <div className="hidden md:flex items-center gap-8 relative">
