@@ -1,4 +1,5 @@
 "use client";
+
 import Link from "next/link";
 import useAuth from "@/hooks/useAuth";
 import { useEffect, useState } from "react";
@@ -10,8 +11,9 @@ export default function Navbar() {
 
   useEffect(() => {
     if (user?.email) {
-      axiosSecure.get(`/users/${user.email}`)
-        .then((res) => setCredits(res.data?.credits ?? 0))
+      fetch(`http://localhost:5000/users/${user.email}`)
+        .then((res) => res.json())
+        .then((data) => setCredits(data?.credits ?? 0))
         .catch((err) => console.error("Failed to fetch credits", err));
     }
   }, [user]);
@@ -21,8 +23,8 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto flex items-center justify-between px-4 sm:px-6 lg:px-8 h-16">
         
         {/* Brand Logo */}
-        <Link href="/" className="flex items-center gap-2 group">
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-white font-bold text-lg shadow-md group-hover:scale-105 transition-transform">
+        <Link href="/" className="flex items-center gap-2.5 group">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-white font-bold text-lg shadow-md group-hover:scale-105 transition-transform">
             F
           </div>
           <span className="text-xl font-extrabold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
@@ -30,13 +32,34 @@ export default function Navbar() {
           </span>
         </Link>
 
-        {/* Navigation Links */}
-        <div className="hidden md:flex items-center gap-8 text-sm font-medium text-gray-600 dark:text-gray-300">
-          <Link href="/explore-campaigns" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
-            Explore Campaigns
+        {/* Navigation Links (Home, Explore, Campaigns, Dashboard) */}
+        <div className="hidden md:flex items-center gap-6 text-sm font-semibold text-gray-700 dark:text-gray-200">
+          <Link 
+            href="/" 
+            className="px-3.5 py-2 rounded-lg hover:bg-blue-50 dark:hover:bg-zinc-800 hover:text-blue-600 dark:hover:text-blue-400 transition-all border border-transparent hover:border-blue-200 dark:hover:border-zinc-700"
+          >
+            Home
           </Link>
+
+          <Link 
+            href="/explore" 
+            className="px-3.5 py-2 rounded-lg hover:bg-blue-50 dark:hover:bg-zinc-800 hover:text-blue-600 dark:hover:text-blue-400 transition-all border border-transparent hover:border-blue-200 dark:hover:border-zinc-700"
+          >
+            Explore
+          </Link>
+          
+          <Link 
+            href="/explore-campaigns" 
+            className="px-3.5 py-2 rounded-lg hover:bg-blue-50 dark:hover:bg-zinc-800 hover:text-blue-600 dark:hover:text-blue-400 transition-all border border-transparent hover:border-blue-200 dark:hover:border-zinc-700"
+          >
+            Campaigns
+          </Link>
+
           {user && (
-            <Link href="/dashboard" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+            <Link 
+              href="/dashboard" 
+              className="px-3.5 py-2 rounded-lg hover:bg-blue-50 dark:hover:bg-zinc-800 hover:text-blue-600 dark:hover:text-blue-400 transition-all border border-transparent hover:border-blue-200 dark:hover:border-zinc-700"
+            >
               Dashboard
             </Link>
           )}
@@ -55,11 +78,16 @@ export default function Navbar() {
 
           {user ? (
             <div className="flex items-center gap-3">
+              
               {/* Credits Badge */}
-              <div className="hidden sm:flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-400 text-xs font-bold shadow-xs">
+              <Link
+                href="/dashboard" 
+                title="View your dashboard & credits"
+                className="hidden sm:flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-400 text-xs font-bold shadow-xs hover:scale-105 transition-transform cursor-pointer"
+              >
                 <span>⚡</span>
                 <span>{credits} credits</span>
-              </div>
+              </Link>
 
               <NotificationBell />
 
