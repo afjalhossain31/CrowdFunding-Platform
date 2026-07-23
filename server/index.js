@@ -87,13 +87,12 @@ async function run() {
             res.send(result);
         });
 
-        // Top Campaigns (Home page এর ৬টি কার্ডের জন্য)
-        // [⚠️ ശ്രദ്ധ করো: Express-এ নির্দিষ্ট রাউটগুলো সবসময় :id বা ডাইনামিক রাউটের উপরে রাখতে হয়]
+        // Top Campaigns
         app.get("/campaigns/top", async (req, res) => {
             const result = await campaignsCollection
                 .find()
                 .sort({ raised_amount: -1 })
-                .limit(6)
+                .limit(8)
                 .toArray();
             res.send(result);
         });
