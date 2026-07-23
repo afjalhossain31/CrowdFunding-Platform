@@ -13,7 +13,7 @@ export default function Navbar() {
       {/* Website Logo */}
       <Link href="/">
         <h1 className="text-2xl font-extrabold text-emerald-600 cursor-pointer">
-          FundFlow
+          CROWDFUND
         </h1>
       </Link>
 

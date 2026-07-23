@@ -7,7 +7,7 @@ import Footer from "@/components/Footer";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
-  title: "FundRise - Crowdfunding Platform",
+  title: "CROWDFUND - Crowdfunding Platform",
   description: "A platform to raise and donate funds securely",
 };
 
