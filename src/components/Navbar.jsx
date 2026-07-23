@@ -1,67 +1,74 @@
 "use client";
-
 import Link from "next/link";
-import { useContext } from "react";
-import { AuthContext } from "@/context/AuthProvider";
+import useAuth from "@/hooks/useAuth";
+import { useEffect, useState } from "react";
+import axiosSecure from "@/lib/axiosSecure";
+import NotificationBell from "./NotificationBell";
 
 export default function Navbar() {
-  const { user, logOut } = useContext(AuthContext);
+  const { user, logout } = useAuth();
+  const [credits, setCredits] = useState(0);
 
-  const handleLogOut = () => {
-    logOut()
-      .then(() => console.log("Logged out successfully"))
-      .catch((error) => console.error(error));
-  };
+  useEffect(() => {
+    if (user?.email) {
+      axiosSecure.get(`/users/${user.email}`)
+        .then((res) => setCredits(res.data?.credits ?? 0))
+        .catch((err) => console.error("Failed to fetch credits", err));
+    }
+  }, [user]);
 
   return (
-    <nav className="bg-white dark:bg-zinc-900 border-b dark:border-zinc-800 sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto px-4 md:px-8 py-4 flex justify-between items-center">
-        
-        {/* Logo */}
-        <Link href="/" className="text-2xl font-bold text-blue-600">
-          CrowdFund
+    <nav className="sticky top-0 z-50 bg-white/90 backdrop-blur shadow-sm">
+      <div className="max-w-7xl mx-auto flex items-center justify-between px-4 py-3">
+        <Link href="/" className="text-xl font-bold text-primary">
+          FundRise
         </Link>
 
-        {/* Center Links (Desktop only) */}
-        <div className="hidden md:flex gap-6 items-center font-medium">
-          <Link href="/" className="hover:text-blue-600 transition">Home</Link>
-          <Link href="/campaigns" className="hover:text-blue-600 transition">All Campaigns</Link>
+        <div className="hidden md:flex items-center gap-6 text-sm font-medium">
+          <Link href="/explore-campaigns">Explore Campaigns</Link>
+          {user && <Link href="/dashboard">Dashboard</Link>}
         </div>
 
-        {/* Auth & Profile Section */}
-        <div className="flex gap-4 items-center">
+        <div className="flex items-center gap-4">
+          <a
+            href="https://github.com/your-username/crowdfunding-client"
+            target="_blank"
+            rel="noreferrer"
+            className="hidden sm:block text-sm px-3 py-1.5 rounded-full border border-primary text-primary hover:bg-primary hover:text-white transition"
+          >
+            Join as Developer
+          </a>
+
           {user ? (
-            <>
-              <Link href="/dashboard" className="hidden md:block hover:text-blue-600 font-medium">
-                Dashboard
-              </Link>
-              {/* Profile Picture */}
-              <div title={user.displayName || "User"} className="w-10 h-10 rounded-full border-2 border-blue-600 overflow-hidden">
-                <img 
-                  src={user?.photoURL || "https://i.ibb.co/X2xMzwL/defult-user.png"} 
-                  alt="Profile" 
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              <button 
-                onClick={handleLogOut} 
-                className="px-4 py-2 bg-red-500 text-white text-sm font-semibold rounded-md hover:bg-red-600 transition"
+            <div className="flex items-center gap-3">
+              <span className="text-sm font-semibold text-accent">{credits} credits</span>
+              <NotificationBell />
+              <img
+                src={user.photoURL || "https://i.ibb.co/2Y0hN8k/avatar.png"}
+                alt="profile"
+                className="w-9 h-9 rounded-full object-cover border-2 border-primary"
+              />
+              <button
+                onClick={logout}
+                className="text-sm px-3 py-1.5 rounded-full bg-gray-100 hover:bg-gray-200 transition"
               >
                 Logout
               </button>
-            </>
+            </div>
           ) : (
-            <>
-              <Link href="/login" className="px-4 py-2 font-medium hover:text-blue-600 transition">
+            <div className="flex items-center gap-3">
+              <Link href="/login" className="text-sm font-medium">
                 Login
               </Link>
-              <Link href="/register" className="px-4 py-2 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 transition">
+              <Link
+                href="/register"
+                className="text-sm px-4 py-1.5 rounded-full bg-primary text-white hover:opacity-90 transition"
+              >
                 Register
               </Link>
-            </>
+            </div>
           )}
         </div>
-
       </div>
     </nav>
   );

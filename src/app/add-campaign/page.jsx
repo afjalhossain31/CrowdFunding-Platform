@@ -30,20 +30,20 @@ export default function CampaignsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-zinc-900 py-10 px-6">
+    <div className="min-h-screen bg-slate-50 dark:bg-dark-primary py-10 px-6">
       <div className="max-w-6xl mx-auto">
-        <h1 className="text-3xl font-bold text-center mb-8 text-gray-800 dark:text-white">
+        <h1 className="text-3xl font-bold text-center mb-8 text-slate-800 dark:text-slate-100">
           All Campaigns ({campaigns.length})
         </h1>
 
         {campaigns.length === 0 ? (
-          <p className="text-center text-gray-600 dark:text-gray-400">No campaigns found. Create one!</p>
+          <p className="text-center text-slate-600 dark:text-slate-400">No campaigns found. Create one!</p>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {campaigns.map((campaign) => (
               <div 
                 key={campaign._id} 
-                className="bg-white dark:bg-zinc-850 rounded-lg shadow-md overflow-hidden border border-gray-200 dark:border-zinc-700 flex flex-col justify-between"
+                className="bg-white dark:bg-dark-secondary rounded-lg shadow-md overflow-hidden border border-slate-200 dark:border-dark-tertiary flex flex-col justify-between"
               >
                 <div>
                   {campaign.image && (
@@ -54,13 +54,13 @@ export default function CampaignsPage() {
                     />
                   )}
                   <div className="p-5">
-                    <span className="text-xs font-semibold uppercase bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300 px-2.5 py-1 rounded">
+                    <span className="text-xs font-semibold uppercase bg-indigo-100 text-indigo-700 dark:bg-indigo-900/50 dark:text-indigo-300 px-2.5 py-1 rounded">
                       {campaign.category}
                     </span>
-                    <h3 className="text-xl font-bold mt-2 text-gray-800 dark:text-white">
+                    <h3 className="text-xl font-bold mt-2 text-slate-800 dark:text-slate-100">
                       {campaign.title}
                     </h3>
-                    <p className="text-gray-600 dark:text-gray-300 text-sm mt-2 line-clamp-2">
+                    <p className="text-slate-600 dark:text-slate-300 text-sm mt-2 line-clamp-2">
                       {campaign.description}
                     </p>
                   </div>
@@ -68,12 +68,12 @@ export default function CampaignsPage() {
 
                 <div className="p-5 pt-0 flex items-center justify-between mt-4">
                   <div>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">Min Donation</p>
-                    <p className="text-lg font-bold text-blue-600 dark:text-blue-400">${campaign.minDonation}</p>
+                    <p className="text-xs text-slate-500 dark:text-slate-400">Min Donation</p>
+                    <p className="text-lg font-bold text-indigo-600 dark:text-indigo-400">${campaign.minDonation}</p>
                   </div>
                   <Link 
                     href={`/campaigns/${campaign._id}`}
-                    className="bg-blue-600 text-white text-sm px-4 py-2 rounded-md hover:bg-blue-700 transition"
+                    className="bg-indigo-600 text-white text-sm px-4 py-2 rounded-md hover:bg-indigo-700 transition"
                   >
                     See More
                   </Link>
