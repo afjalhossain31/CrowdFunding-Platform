@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { motion } from "framer-motion";
+import { Clock } from "lucide-react";
 
 export default function TopCampaigns() {
   const [campaigns, setCampaigns] = useState([]);
@@ -31,88 +33,117 @@ export default function TopCampaigns() {
   if (loading) {
     return (
       <div className="flex justify-center items-center py-20">
-        <span className="loading loading-spinner loading-lg text-indigo-600"></span>
+        <span className="loading loading-spinner loading-lg text-emerald-500"></span>
       </div>
     );
   }
 
   return (
-    <section className="max-w-7xl mx-auto px-4 md:px-8 py-16">
-      <div className="text-center max-w-2xl mx-auto mb-12">
-        <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 dark:text-white">
-          Top Fundraising Campaigns
-        </h2>
-        <p className="text-slate-500 dark:text-slate-400 text-sm mt-3">
-          Discover the most successful campaigns and support meaningful causes.
-        </p>
-      </div>
+    <section className="bg-slate-50 w-full py-16 md:py-20 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto">
+        
+        {/* Section Header */}
+        <div className="text-center max-w-2xl mx-auto mb-14">
+          <h2 className="text-3xl md:text-4xl font-extrabold text-slate-800">
+            Top Fundraising Campaigns
+          </h2>
+          <p className="text-slate-500 text-sm mt-3">
+            Discover the most successful campaigns and support meaningful causes.
+          </p>
+        </div>
 
-      {campaigns.length === 0 ? (
-        <p className="text-center text-gray-500 dark:text-gray-400 py-10">
-          No campaigns available at the moment.
-        </p>
-      ) : (
-        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-          {campaigns.map((campaign) => (
-            <div
-              key={campaign._id}
-              className="bg-white dark:bg-zinc-900 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-slate-100 dark:border-zinc-800 flex flex-col justify-between"
-            >
-              {/* Campaign Image */}
-              <div className="relative h-48 overflow-hidden bg-slate-100 dark:bg-zinc-800">
-                <img
-                  src={campaign.image || campaign.campaign_image_url}
-                  alt={campaign.title || campaign.campaign_title}
-                  className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
-                />
-                <span className="absolute top-3 right-3 bg-amber-400 text-zinc-950 text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider shadow-xs">
-                  {campaign.category || "General"}
-                </span>
-              </div>
+        {campaigns.length === 0 ? (
+          <p className="text-center text-gray-500 py-10">
+            No campaigns available at the moment.
+          </p>
+        ) : (
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {campaigns.map((campaign, index) => {
+              
+              const goal = campaign.minDonation || campaign.funding_goal || 1;
+              const raised = campaign.raised_amount || 0;
+              const progressPercentage = Math.min((raised / goal) * 100, 100).toFixed(2);
 
-              {/* Card Body */}
-              <div className="p-6 flex-1 flex flex-col justify-between">
-                <div>
-                  <h3 className="text-lg font-bold text-slate-800 dark:text-slate-100 mb-2 line-clamp-1">
-                    {campaign.title || campaign.campaign_title}
-                  </h3>
-
-                  <p className="text-gray-600 dark:text-gray-400 text-xs sm:text-sm line-clamp-2 mb-6">
-                    {campaign.description}
-                  </p>
-                </div>
-
-                <div>
-                  {/* Donation & Raised Info */}
-                  <div className="flex justify-between items-center mb-6 pt-4 border-t border-slate-100 dark:border-zinc-800 text-xs">
-                    <div>
-                      <p className="text-gray-400">Goal / Min</p>
-                      <p className="font-bold text-slate-800 dark:text-slate-200 mt-0.5">
-                        ${campaign.minDonation || campaign.funding_goal || 0}
-                      </p>
-                    </div>
-
-                    <div className="text-right">
-                      <p className="text-gray-400">Raised</p>
-                      <p className="font-bold text-emerald-600 dark:text-emerald-400 mt-0.5">
-                        ${campaign.raised_amount || 0}
-                      </p>
+              return (
+                <motion.div
+                  key={campaign._id}
+                  // নতুন অ্যানিমেশন: নিচ থেকে হালকা জুম হয়ে ভেসে উঠবে
+                  initial={{ opacity: 0, y: 30, scale: 0.95 }} 
+                  whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                  viewport={{ once: true, amount: 0.1 }}
+                  transition={{ duration: 0.5, delay: index * 0.1, ease: "easeOut" }}
+                  className="bg-white rounded-md overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-slate-100 flex flex-col"
+                >
+                  {/* Image Section - উচ্চতা কমানো হয়েছে h-44 */}
+                  <div className="relative h-44 overflow-hidden">
+                    <img
+                      src={campaign.image || campaign.campaign_image_url}
+                      alt={campaign.title || campaign.campaign_title}
+                      className="w-full h-full object-cover"
+                    />
+                    
+                    <div className="absolute -bottom-4 left-5 w-9 h-9 rounded-full border-2 border-white overflow-hidden bg-slate-200 shadow-sm">
+                      <img 
+                        src={`https://ui-avatars.com/api/?name=${campaign.creator_name || "User"}&background=random`} 
+                        alt="creator"
+                        className="w-full h-full object-cover"
+                      />
                     </div>
                   </div>
 
-                  {/* Action Button */}
-                  <Link
-                    href={`/campaigns/${campaign._id}`}
-                    className="block w-full text-center bg-indigo-600 hover:bg-indigo-700 text-white py-2.5 rounded-xl transition-all font-semibold text-xs uppercase tracking-wider shadow-sm active:scale-95"
-                  >
-                    See More
-                  </Link>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
+                  {/* Card Body - প্যাডিং ও ফন্ট সাইজ কমানো হয়েছে */}
+                  <div className="pt-6 pb-5 px-5 flex-1 flex flex-col">
+                    
+                    <div className="text-xs text-slate-400 mb-1.5">
+                      by <span className="text-emerald-500 font-medium">{campaign.creator_name || "Jane Smith"}</span>
+                    </div>
+
+                    <Link href={`/campaigns/${campaign._id}`}>
+                      <h3 className="text-lg font-bold text-slate-800 mb-5 leading-tight hover:text-emerald-600 transition-colors line-clamp-2">
+                        {campaign.title || campaign.campaign_title}
+                      </h3>
+                    </Link>
+
+                    <div className="flex-grow"></div>
+
+                    <div>
+                      <div className="w-full bg-slate-100 h-1 rounded-full mb-2.5 overflow-hidden">
+                        <div 
+                          className="bg-emerald-500 h-full rounded-full"
+                          style={{ width: `${progressPercentage}%` }}
+                        ></div>
+                      </div>
+
+                      <div className="flex justify-between items-baseline mb-0.5">
+                        <p className="text-base font-bold text-slate-800">${raised.toLocaleString()}</p>
+                        <p className="text-xs font-medium text-slate-700">{progressPercentage}%</p>
+                      </div>
+                      <p className="text-[11px] text-slate-400 mb-4">
+                        raised of ${goal.toLocaleString()}
+                      </p>
+
+                      <div className="w-full h-[1px] bg-slate-100 mb-3"></div>
+
+                      <div className="flex justify-between items-center text-[11px] text-slate-500 font-medium">
+                        <div className="flex items-center gap-1.5">
+                          <Clock className="w-3.5 h-3.5 text-emerald-500" />
+                          <span>0 Days to go</span>
+                        </div>
+                        <Link 
+                          href={`/campaigns/${campaign._id}`}
+                          className="text-emerald-600 hover:text-emerald-700 font-semibold text-xs"
+                        >
+                          View Details →
+                        </Link>
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+              );
+            })}
+          </div>
+        )}
+      </div>
     </section>
   );
 }

@@ -4,7 +4,10 @@ import Link from "next/link";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Pagination, Navigation, EffectFade } from "swiper/modules";
 import { ArrowRight, CheckCircle2, TrendingUp, Users, ShieldCheck, Award } from "lucide-react";
-import TopCampaignsSection from "@/components/TopCampaigns"; // <-- এভাবে ইমপোর্ট করো
+import { motion } from "framer-motion"; // <-- Framer Motion ইমপোর্ট করা হলো
+
+import TopCampaignsSection from "@/components/TopCampaigns";
+import WeHelpSection from "@/components/WeHelpSection";
 
 // Swiper styles
 import "swiper/css";
@@ -62,7 +65,7 @@ export default function Home() {
                 {/* Content */}
                 <div className="relative z-10 max-w-4xl mx-auto px-6 text-center text-white flex flex-col items-center">
 
-                  {/* Top Badge (Green Ribbon Style from image) */}
+                  {/* Top Badge */}
                   <div className="inline-block bg-emerald-500 text-zinc-950 font-bold text-xs sm:text-sm uppercase tracking-wider px-5 py-1.5 rounded-sm shadow-md mb-6 transform -skew-x-6">
                     <span className="transform skew-x-6">{slide.badge}</span>
                   </div>
@@ -77,7 +80,7 @@ export default function Home() {
                     {slide.subtitle}
                   </p>
 
-                  {/* Yellow CTA Button from image */}
+                  {/* Yellow CTA Button */}
                   <Link
                     href={slide.buttonLink}
                     className="inline-flex items-center gap-2 px-8 py-3.5 bg-amber-400 hover:bg-amber-300 text-zinc-950 font-bold text-sm uppercase tracking-wider rounded-md shadow-lg transition-all hover:scale-105 active:scale-95"
@@ -92,70 +95,81 @@ export default function Home() {
         </Swiper>
       </section>
 
-      {/* Top Funded Campaigns Section (Matching your requirement & design) */}
+      {/* 2. Top Funded Campaigns Section */}
       <TopCampaignsSection />
 
+      {/* 3. Impact/Counter Section (Light Yellow Matching image_157f38.png) */}
+      <section className="w-full bg-[#fce060] py-16 md:py-24 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
 
+        {/* Optional: Faint Background Pattern (mimicking the raised hands vibe with a subtle gradient/opacity) */}
+        <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-white to-transparent pointer-events-none"></div>
 
-      {/* 3. Yellow Counter/Impact Section (Matching your screenshot) */}
-      <section className="bg-amber-400 py-16 px-4 text-zinc-900 relative overflow-hidden">
-        <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 text-center relative z-10">
-          <div>
-            <div className="text-4xl md:text-5xl font-black mb-1">84k</div>
-            <div className="text-sm font-bold uppercase tracking-wider text-zinc-800">Projects are Completed</div>
-          </div>
-          <div>
-            <div className="text-4xl md:text-5xl font-black mb-1">22k</div>
-            <div className="text-sm font-bold uppercase tracking-wider text-zinc-800">Ideas Raised Funds</div>
-          </div>
-          <div>
-            <div className="text-4xl md:text-5xl font-black mb-1">17k</div>
-            <div className="text-sm font-bold uppercase tracking-wider text-zinc-800">Categories Served</div>
-          </div>
-          <div>
-            <div className="text-4xl md:text-5xl font-black mb-1">88k</div>
-            <div className="text-sm font-bold uppercase tracking-wider text-zinc-800">Happy Customers</div>
-          </div>
+        <div className="max-w-7xl mx-auto relative z-10">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.3 }}
+            transition={{ duration: 0.6 }}
+            className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-4 text-center"
+          >
+            {/* Item 1 */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.1, type: "spring", stiffness: 200 }}
+              className="flex flex-col items-center justify-center"
+            >
+              <div className="text-5xl md:text-6xl font-light mb-2 text-[#2c3e50]">84k</div>
+              <div className="text-sm md:text-base font-normal text-[#2c3e50]">Projects are Completed</div>
+            </motion.div>
+
+            {/* Item 2 */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
+              className="flex flex-col items-center justify-center"
+            >
+              <div className="text-5xl md:text-6xl font-light mb-2 text-[#2c3e50]">22k</div>
+              <div className="text-sm md:text-base font-normal text-[#2c3e50]">Ideas Raised Funds</div>
+            </motion.div>
+
+            {/* Item 3 */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.3, type: "spring", stiffness: 200 }}
+              className="flex flex-col items-center justify-center"
+            >
+              <div className="text-5xl md:text-6xl font-light mb-2 text-[#2c3e50]">17k</div>
+              <div className="text-sm md:text-base font-normal text-[#2c3e50]">Categories Served</div>
+            </motion.div>
+
+            {/* Item 4 */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.4, type: "spring", stiffness: 200 }}
+              className="flex flex-col items-center justify-center"
+            >
+              <div className="text-5xl md:text-6xl font-light mb-2 text-[#2c3e50]">88k</div>
+              <div className="text-sm md:text-base font-normal text-[#2c3e50]">Happy Customers</div>
+            </motion.div>
+
+          </motion.div>
         </div>
       </section>
 
-      {/* 4. We Help at Every Step Section (Matching your screenshot) */}
-      <section className="bg-slate-800 text-white py-20 px-4 md:px-8 relative overflow-hidden">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-          <div>
-            <h2 className="text-3xl md:text-4xl font-extrabold mb-4 leading-tight">
-              We Help at Every Step from Concept to Market
-            </h2>
-            <p className="text-slate-300 text-sm mb-8 leading-relaxed">
-              Discover projects just for you and get great recommendations when you select your interests.
-            </p>
+      {/* 4. We Help at Every Step Section */}
+      <WeHelpSection />
 
-            <ul className="space-y-4 text-sm font-medium">
-              <li className="flex items-center gap-3">
-                <CheckCircle2 className="text-amber-400 shrink-0" size={20} />
-                Raise funds with a crowdfunding campaign
-              </li>
-              <li className="flex items-center gap-3">
-                <CheckCircle2 className="text-amber-400 shrink-0" size={20} />
-                Extend your campaign with InDemand
-              </li>
-              <li className="flex items-center gap-3">
-                <CheckCircle2 className="text-amber-400 shrink-0" size={20} />
-                Fast track to the global market
-              </li>
-            </ul>
-          </div>
 
-          <div className="relative">
-            <div className="rounded-2xl overflow-hidden shadow-2xl border border-slate-700">
-              <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=800&auto=format&fit=crop" alt="experts" className="w-full h-80 object-cover" />
-            </div>
-            <div className="absolute -bottom-6 -left-6 bg-emerald-500 text-zinc-950 p-6 rounded-xl shadow-xl max-w-xs font-bold text-sm hidden sm:block">
-              All the Right Experts to Help Your Business
-            </div>
-          </div>
-        </div>
-      </section>
+
+
 
     </div>
   );
