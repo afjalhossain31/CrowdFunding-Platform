@@ -1,7 +1,6 @@
 "use client";
 
 import { Swiper, SwiperSlide } from "swiper/react";
-// Navigation মডিউল পুরোপুরি বাদ দেওয়া হয়েছে
 import { Pagination, Autoplay, EffectFade } from "swiper/modules"; 
 import "swiper/css";
 import "swiper/css/pagination";

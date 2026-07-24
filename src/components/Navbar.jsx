@@ -70,14 +70,14 @@ export default function Navbar() {
             Home
           </Link>
 
-          {/* Desktop Dropdown for Campaigns / Explore */}
+          {/* Desktop Dropdown for Campaigns */}
           <div 
             className="relative group"
             onMouseEnter={() => setIsDropdownOpen(true)}
             onMouseLeave={() => setIsDropdownOpen(false)}
           >
             <Link 
-              href="/campaigns"
+              href="/explore"
               className="flex items-center gap-1 text-slate-700 hover:text-emerald-600 font-medium transition-colors outline-none py-2"
             >
               Campaigns
@@ -87,20 +87,20 @@ export default function Navbar() {
             {isDropdownOpen && (
               <div className="absolute top-full left-0 w-60 bg-white border border-slate-100 shadow-xl rounded-xl overflow-hidden transition-all duration-300 py-2">
                 <div className="flex flex-col">
-                  <Link href="/campaigns?category=technology" className="px-5 py-2.5 text-sm text-slate-600 hover:bg-emerald-50 hover:text-emerald-600 transition-colors">
+                  <Link href="/explore?category=technology" className="px-5 py-2.5 text-sm text-slate-600 hover:bg-emerald-50 hover:text-emerald-600 transition-colors">
                     Technology Projects
                   </Link>
-                  <Link href="/campaigns?category=health" className="px-5 py-2.5 text-sm text-slate-600 hover:bg-emerald-50 hover:text-emerald-600 transition-colors">
+                  <Link href="/explore?category=health" className="px-5 py-2.5 text-sm text-slate-600 hover:bg-emerald-50 hover:text-emerald-600 transition-colors">
                     Health & Medical
                   </Link>
-                  <Link href="/campaigns?category=community" className="px-5 py-2.5 text-sm text-slate-600 hover:bg-emerald-50 hover:text-emerald-600 transition-colors">
+                  <Link href="/explore?category=community" className="px-5 py-2.5 text-sm text-slate-600 hover:bg-emerald-50 hover:text-emerald-600 transition-colors">
                     Community Causes
                   </Link>
-                  <Link href="/campaigns?category=education" className="px-5 py-2.5 text-sm text-slate-600 hover:bg-emerald-50 hover:text-emerald-600 transition-colors">
+                  <Link href="/explore?category=education" className="px-5 py-2.5 text-sm text-slate-600 hover:bg-emerald-50 hover:text-emerald-600 transition-colors">
                     Education
                   </Link>
                   <hr className="my-1.5 border-slate-100" />
-                  <Link href="/campaigns" className="px-5 py-2.5 text-sm font-bold text-emerald-600 hover:bg-emerald-50 transition-colors flex items-center justify-between">
+                  <Link href="/explore-campaigns" className="px-5 py-2.5 text-sm font-bold text-emerald-600 hover:bg-emerald-50 transition-colors flex items-center justify-between">
                     View All Campaigns →
                   </Link>
                 </div>
@@ -182,7 +182,7 @@ export default function Navbar() {
           <div className="border-b border-slate-100">
             <div className="flex items-center justify-between py-3">
               <Link 
-                href="/campaigns" 
+                href="/explore" 
                 className="text-slate-700 font-medium hover:text-emerald-600 transition-colors flex-1"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
@@ -198,19 +198,19 @@ export default function Navbar() {
             
             {isMobileExploreOpen && (
               <div className="flex flex-col gap-2 pb-4 pl-4 mt-1 bg-slate-50/50 rounded-xl p-3 border border-slate-100">
-                <Link href="/campaigns?category=technology" className="py-2 text-sm text-slate-600 hover:text-emerald-600 font-medium" onClick={() => setIsMobileMenuOpen(false)}>
+                <Link href="/explore?category=technology" className="py-2 text-sm text-slate-600 hover:text-emerald-600 font-medium" onClick={() => setIsMobileMenuOpen(false)}>
                   Technology Projects
                 </Link>
-                <Link href="/campaigns?category=health" className="py-2 text-sm text-slate-600 hover:text-emerald-600 font-medium" onClick={() => setIsMobileMenuOpen(false)}>
+                <Link href="/explore?category=health" className="py-2 text-sm text-slate-600 hover:text-emerald-600 font-medium" onClick={() => setIsMobileMenuOpen(false)}>
                   Health & Medical
                 </Link>
-                <Link href="/campaigns?category=community" className="py-2 text-sm text-slate-600 hover:text-emerald-600 font-medium" onClick={() => setIsMobileMenuOpen(false)}>
+                <Link href="/explore?category=community" className="py-2 text-sm text-slate-600 hover:text-emerald-600 font-medium" onClick={() => setIsMobileMenuOpen(false)}>
                   Community Causes
                 </Link>
-                <Link href="/campaigns?category=education" className="py-2 text-sm text-slate-600 hover:text-emerald-600 font-medium" onClick={() => setIsMobileMenuOpen(false)}>
+                <Link href="/explore?category=education" className="py-2 text-sm text-slate-600 hover:text-emerald-600 font-medium" onClick={() => setIsMobileMenuOpen(false)}>
                   Education
                 </Link>
-                <Link href="/campaigns" className="py-2 text-sm font-bold text-emerald-600 mt-1" onClick={() => setIsMobileMenuOpen(false)}>
+                <Link href="/explore" className="py-2 text-sm font-bold text-emerald-600 mt-1" onClick={() => setIsMobileMenuOpen(false)}>
                   View All Campaigns →
                 </Link>
               </div>
