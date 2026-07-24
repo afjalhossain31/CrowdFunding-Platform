@@ -6,10 +6,11 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { Mail, Lock, LogIn, Eye, EyeOff } from "lucide-react";
-import { FcGoogle } from "react-icons/fc"; // Google Icon import করা হয়েছে
+import { FcGoogle } from "react-icons/fc";
 
 export default function Login() {
-  const { loginUser, googleSignIn } = useContext(AuthContext);
+  // 1. googleSignIn এর পরিবর্তে সঠিক loginWithGoogle ব্যবহার করা হলো
+  const { loginUser, loginWithGoogle } = useContext(AuthContext);
   const router = useRouter();
 
   const [email, setEmail] = useState("");
@@ -36,13 +37,14 @@ export default function Login() {
 
   const handleGoogleLogin = async () => {
     try {
-      if (googleSignIn) {
-        await googleSignIn();
-        router.push("/dashboard");
+      if (loginWithGoogle) {
+        await loginWithGoogle();
+        router.push("/");
       } else {
         alert("Google Sign-In function is not implemented in AuthContext yet.");
       }
     } catch (err) {
+      console.error(err);
       setError("Google Sign-In failed. Please try again.");
     }
   };
@@ -163,7 +165,7 @@ export default function Login() {
           type="button"
           className="w-full flex items-center justify-center gap-3 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 py-3 rounded-xl transition duration-300 font-semibold shadow-sm mb-6"
         >
-          <FcGoogle className="w-6 h-6" /> {/* Cleaned up SVG, used React Icon */}
+          <FcGoogle className="w-6 h-6" />
           Sign in with Google
         </button>
 

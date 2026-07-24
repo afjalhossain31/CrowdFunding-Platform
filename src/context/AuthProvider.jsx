@@ -22,27 +22,54 @@ export default function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  // Email & Password দিয়ে সাইন আপ
   const createUser = (email, password) => {
     setLoading(true);
     return createUserWithEmailAndPassword(auth, email, password);
   };
 
+  // Email & Password দিয়ে লগইন
   const loginUser = (email, password) => {
     setLoading(true);
     return signInWithEmailAndPassword(auth, email, password);
   };
 
-  const loginWithGoogle = () => {
+  // Google দিয়ে লগইন + ডেটাবেসে ইউজার সেভ করার ব্যবস্থা
+  const loginWithGoogle = async () => {
     setLoading(true);
-    return signInWithPopup(auth, googleProvider);
+    try {
+      const result = await signInWithPopup(auth, googleProvider);
+      const loggedUser = result.user;
+
+      // ইউজারের তথ্য ব্যাকএন্ডে পাঠানো
+      const userData = {
+        name: loggedUser.displayName || "Google User",
+        email: loggedUser.email,
+        photo: loggedUser.photoURL || "",
+      };
+
+      await fetch("http://localhost:5000/users", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(userData),
+      });
+
+      return result;
+    } catch (error) {
+      console.error("Google Sign-In Error:", error);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
   };
 
-  // Navbar এ logOut নামে কল করা হচ্ছে, তাই এখানেও logOut রাখা হলো
+  // লগআউট ফাংশন
   const logOut = () => {
     setLoading(true);
     return signOut(auth);
   };
 
+  // ইউজার প্রোফাইল আপডেট
   const updateUserProfile = (name, photo) => {
     return updateProfile(auth.currentUser, {
       displayName: name,
@@ -50,6 +77,7 @@ export default function AuthProvider({ children }) {
     });
   };
 
+  // ইউজারের স্টেট ট্র্যাক করা
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
@@ -64,7 +92,7 @@ export default function AuthProvider({ children }) {
     createUser,
     loginUser,
     loginWithGoogle,
-    logOut, // এখানে logOut পাস করা হলো
+    logOut,
     updateUserProfile,
   };
 

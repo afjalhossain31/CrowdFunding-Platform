@@ -3,35 +3,48 @@
 import { useState, useContext } from "react";
 import { AuthContext } from "@/context/AuthProvider";
 import { useRouter } from "next/navigation";
-import { PlusCircle, Image, DollarSign, Calendar, Tag, FileText, User, Mail } from "lucide-react";
 
 export default function AddCampaignPage() {
   const { user } = useContext(AuthContext);
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setErrorMessage("");
     setLoading(true);
 
     const form = e.target;
-    const title = form.title.value;
+    const title = form.title.value.trim();
     const category = form.category.value;
-    const image = form.image.value;
+    const image = form.image.value.trim();
     const minDonation = parseFloat(form.minDonation.value);
+    const funding_goal = parseFloat(form.funding_goal.value);
     const deadline = form.deadline.value;
-    const description = form.description.value;
+    const description = form.description.value.trim();
+
+    // ভ্যালিডেশন চেক
+    if (minDonation > funding_goal) {
+      setErrorMessage("Minimum donation amount কখনোই Funding goal থেকে বেশি হতে পারবে না।");
+      setLoading(false);
+      return;
+    }
 
     const newCampaign = {
       title,
+      campaign_title: title,
       category,
       image,
+      campaign_image_url: image,
       minDonation,
+      funding_goal,
+      raised_amount: 0,
       deadline,
       description,
       creator_name: user?.displayName || "Anonymous Creator",
       creator_email: user?.email || "creator@gmail.com",
-      raised_amount: 0,
+      creator_image: user?.photoURL || "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=200&auto=format&fit=crop",
     };
 
     try {
@@ -48,11 +61,11 @@ export default function AddCampaignPage() {
         alert("Campaign added successfully!");
         router.push("/explore");
       } else {
-        alert(data.message || "Failed to add campaign");
+        setErrorMessage(data.message || "Failed to add campaign");
       }
     } catch (error) {
       console.error("Error adding campaign:", error);
-      alert("Something went wrong!");
+      setErrorMessage("সার্ভারের সাথে সংযোগ স্থাপন করতে সমস্যা হচ্ছে!");
     } finally {
       setLoading(false);
     }
@@ -70,6 +83,13 @@ export default function AddCampaignPage() {
           </p>
         </div>
 
+        {/* Error Alert */}
+        {errorMessage && (
+          <div className="mx-8 mt-6 p-4 bg-red-50 border border-red-200 text-red-600 text-xs sm:text-sm font-semibold rounded-xl text-center">
+            {errorMessage}
+          </div>
+        )}
+
         {/* Form Body */}
         <form onSubmit={handleSubmit} className="p-6 sm:p-10 space-y-6">
           
@@ -84,7 +104,7 @@ export default function AddCampaignPage() {
                 type="text"
                 name="title"
                 required
-                placeholder="e.g. Portable AI Translator Earbuds"
+                placeholder="e.g. Free Medical Camp for Rural Families"
                 className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all"
               />
             </div>
@@ -99,11 +119,11 @@ export default function AddCampaignPage() {
                 required
                 className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all cursor-pointer"
               >
-                <option value="Technology">Technology</option>
                 <option value="Health">Health</option>
+                <option value="Medical">Medical</option>
+                <option value="Technology">Technology</option>
                 <option value="Community">Community</option>
                 <option value="Education">Education</option>
-                <option value="Design">Design</option>
               </select>
             </div>
 
@@ -120,12 +140,12 @@ export default function AddCampaignPage() {
                 type="url"
                 name="image"
                 required
-                placeholder="https://images.unsplash.com/..."
+                placeholder="https://images.pexels.com/..."
                 className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all"
               />
             </div>
 
-            {/* Minimum Donation / Goal */}
+            {/* Minimum Donation */}
             <div>
               <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">
                 Minimum Donation Amount ($)
@@ -134,7 +154,7 @@ export default function AddCampaignPage() {
                 type="number"
                 name="minDonation"
                 required
-                placeholder="100"
+                placeholder="30"
                 className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all"
               />
             </div>
@@ -143,6 +163,20 @@ export default function AddCampaignPage() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             
+            {/* Funding Goal */}
+            <div>
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">
+                Funding Goal ($)
+              </label>
+              <input
+                type="number"
+                name="funding_goal"
+                required
+                placeholder="8000"
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all"
+              />
+            </div>
+
             {/* Deadline */}
             <div>
               <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">
@@ -156,19 +190,19 @@ export default function AddCampaignPage() {
               />
             </div>
 
-            {/* User Info (Read-only from Auth) */}
-            <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">
-                User Email (Logged in)
-              </label>
-              <input
-                type="email"
-                disabled
-                value={user?.email || "user@gmail.com"}
-                className="w-full bg-slate-100 border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-500 cursor-not-allowed"
-              />
-            </div>
+          </div>
 
+          {/* User Email (Read-only) */}
+          <div>
+            <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">
+              Creator Email (Logged in)
+            </label>
+            <input
+              type="email"
+              disabled
+              value={user?.email || "creator@gmail.com"}
+              className="w-full bg-slate-100 border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-500 cursor-not-allowed"
+            />
           </div>
 
           {/* Description */}
@@ -180,7 +214,7 @@ export default function AddCampaignPage() {
               name="description"
               required
               rows="5"
-              placeholder="Write details about your campaign story and goals..."
+              placeholder="Support a free healthcare initiative..."
               className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all"
             ></textarea>
           </div>
@@ -189,7 +223,7 @@ export default function AddCampaignPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 px-6 rounded-xl uppercase tracking-wider text-xs transition-colors shadow-sm flex items-center justify-center gap-2"
+            className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 px-6 rounded-xl uppercase tracking-wider text-xs transition-colors shadow-sm flex items-center justify-center gap-2 cursor-pointer"
           >
             {loading ? "Adding Campaign..." : "Add Campaign"}
           </button>

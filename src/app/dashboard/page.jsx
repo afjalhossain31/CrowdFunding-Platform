@@ -15,8 +15,9 @@ export default function DashboardOverview() {
   
   const [formData, setFormData] = useState({
     title: "",
-    category: "technology",
-    goal: "",
+    category: "Health",
+    minDonation: "",
+    funding_goal: "",
     deadline: "",
     image: "",
     description: "",
@@ -30,14 +31,31 @@ export default function DashboardOverview() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-    setMessage({ text: "", type: "" });
+    setMessage({ text: "", type: "", error: "" });
+
+    const minDonationNum = Number(formData.minDonation);
+    const goalNum = Number(formData.funding_goal);
+
+    if (minDonationNum > goalNum) {
+      setMessage({ text: "Minimum donation amount cannot be greater than funding goal.", type: "error" });
+      setIsSubmitting(false);
+      return;
+    }
 
     const newCampaign = {
-      ...formData,
-      goal: Number(formData.goal),
-      creatorName: user?.displayName || "Anonymous",
-      creatorEmail: user?.email,
-      raisedAmount: 0,
+      title: formData.title,
+      campaign_title: formData.title,
+      category: formData.category,
+      minDonation: minDonationNum,
+      funding_goal: goalNum,
+      deadline: formData.deadline,
+      image: formData.image,
+      campaign_image_url: formData.image,
+      description: formData.description,
+      creator_name: user?.displayName || "Anonymous Creator",
+      creator_email: user?.email || "creator@gmail.com",
+      creator_image: user?.photoURL || "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=200&auto=format&fit=crop",
+      raised_amount: 0,
       status: "active",
       createdAt: new Date().toISOString(),
     };
@@ -49,9 +67,9 @@ export default function DashboardOverview() {
       
       setTimeout(() => {
         setIsModalOpen(false);
-        setFormData({ title: "", category: "technology", goal: "", deadline: "", image: "", description: "" });
+        setFormData({ title: "", category: "Health", minDonation: "", funding_goal: "", deadline: "", image: "", description: "" });
         setMessage({ text: "", type: "" });
-      }, 2000);
+      }, 1500);
 
     } catch (error) {
       console.error("Failed to add campaign:", error);
@@ -75,7 +93,7 @@ export default function DashboardOverview() {
           </div>
           <button 
             onClick={() => setIsModalOpen(true)}
-            className="bg-white text-emerald-600 px-6 py-2.5 rounded-lg font-bold hover:bg-emerald-50 transition shadow-sm"
+            className="bg-white text-emerald-600 px-6 py-2.5 rounded-lg font-bold hover:bg-emerald-50 transition shadow-sm cursor-pointer"
           >
             + Add New Campaign
           </button>
@@ -125,7 +143,7 @@ export default function DashboardOverview() {
                   <td className="py-4 px-2">Solar-powered water pump</td>
                   <td className="py-4 px-2 font-semibold text-emerald-600">500 Credits</td>
                   <td className="py-4 px-2 text-right">
-                    <button className="text-xs bg-emerald-50 text-emerald-600 px-3 py-1.5 rounded-md font-semibold hover:bg-emerald-100 mr-2">Review</button>
+                    <button className="text-xs bg-emerald-50 text-emerald-600 px-3 py-1.5 rounded-md font-semibold hover:bg-emerald-100 mr-2 cursor-pointer">Review</button>
                   </td>
                 </tr>
               </tbody>
@@ -164,7 +182,7 @@ export default function DashboardOverview() {
                 <p className="text-lg font-bold text-emerald-600">$425.00</p>
               </div>
             </div>
-            <button className="w-full mt-2 bg-slate-900 text-white py-2.5 rounded-lg font-semibold hover:bg-slate-800 transition">
+            <button className="w-full mt-2 bg-slate-900 text-white py-2.5 rounded-lg font-semibold hover:bg-slate-800 transition cursor-pointer">
               Request Withdrawal
             </button>
           </div>
@@ -185,8 +203,8 @@ export default function DashboardOverview() {
           <div className="bg-white rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl relative animate-in fade-in zoom-in duration-200">
             
             <div className="sticky top-0 bg-white border-b border-slate-100 px-6 py-4 flex justify-between items-center z-10">
-              <h2 className="text-xl font-bold text-slate-800">Add New Campaign</h2>
-              <button onClick={() => setIsModalOpen(false)} className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-full transition">
+              <h2 className="text-xl font-bold text-slate-800">Start a New Campaign</h2>
+              <button onClick={() => setIsModalOpen(false)} className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-full transition cursor-pointer">
                 <X className="w-5 h-5" />
               </button>
             </div>
@@ -200,61 +218,78 @@ export default function DashboardOverview() {
               )}
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                
+                {/* Campaign Title */}
                 <div className="col-span-1 md:col-span-2">
                   <label className="block text-sm font-semibold text-slate-700 mb-1">Campaign Title</label>
-                  {/* Updated Input classes for better visibility */}
                   <input 
                     type="text" required name="title" value={formData.title} onChange={handleChange}
                     className="w-full px-4 py-2 bg-slate-50 text-slate-900 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition-colors"
-                    placeholder="e.g. Clean Water Initiative"
+                    placeholder="e.g. Free Medical Camp for Rural Families"
                   />
                 </div>
 
+                {/* Category */}
                 <div>
                   <label className="block text-sm font-semibold text-slate-700 mb-1">Category</label>
                   <select 
                     name="category" value={formData.category} onChange={handleChange}
                     className="w-full px-4 py-2 bg-slate-50 text-slate-900 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition-colors cursor-pointer"
                   >
-                    <option value="technology">Technology</option>
-                    <option value="health">Health & Medical</option>
-                    <option value="community">Community Causes</option>
-                    <option value="education">Education</option>
+                    <option value="Health">Health</option>
+                    <option value="Medical">Medical</option>
+                    <option value="Technology">Technology</option>
+                    <option value="Community">Community Causes</option>
+                    <option value="Education">Education</option>
                   </select>
                 </div>
 
+                {/* Minimum Donation Amount */}
                 <div>
-                  <label className="block text-sm font-semibold text-slate-700 mb-1">Goal Amount (Credits)</label>
+                  <label className="block text-sm font-semibold text-slate-700 mb-1">Minimum Donation Amount ($)</label>
                   <input 
-                    type="number" required min="10" name="goal" value={formData.goal} onChange={handleChange}
+                    type="number" required min="1" name="minDonation" value={formData.minDonation} onChange={handleChange}
                     className="w-full px-4 py-2 bg-slate-50 text-slate-900 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition-colors"
-                    placeholder="e.g. 5000"
+                    placeholder="e.g. 30"
                   />
                 </div>
 
+                {/* Funding Goal */}
+                <div>
+                  <label className="block text-sm font-semibold text-slate-700 mb-1">Funding Goal ($)</label>
+                  <input 
+                    type="number" required min="10" name="funding_goal" value={formData.funding_goal} onChange={handleChange}
+                    className="w-full px-4 py-2 bg-slate-50 text-slate-900 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition-colors"
+                    placeholder="e.g. 8000"
+                  />
+                </div>
+
+                {/* Deadline Date */}
                 <div>
                   <label className="block text-sm font-semibold text-slate-700 mb-1">Deadline Date</label>
                   <input 
                     type="date" required name="deadline" value={formData.deadline} onChange={handleChange}
-                    className="w-full px-4 py-2 bg-slate-50 text-slate-900 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition-colors"
+                    className="w-full px-4 py-2 bg-slate-50 text-slate-900 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition-colors cursor-pointer"
                   />
                 </div>
 
-                <div>
-                  <label className="block text-sm font-semibold text-slate-700 mb-1">Cover Image URL</label>
+                {/* Cover Image URL */}
+                <div className="col-span-1 md:col-span-2">
+                  <label className="block text-sm font-semibold text-slate-700 mb-1">Image URL</label>
                   <input 
                     type="url" required name="image" value={formData.image} onChange={handleChange}
                     className="w-full px-4 py-2 bg-slate-50 text-slate-900 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition-colors"
-                    placeholder="https://example.com/image.jpg"
+                    placeholder="https://images.pexels.com/..."
                   />
                 </div>
 
+                {/* Description */}
                 <div className="col-span-1 md:col-span-2">
                   <label className="block text-sm font-semibold text-slate-700 mb-1">Description</label>
                   <textarea 
                     required rows="4" name="description" value={formData.description} onChange={handleChange}
                     className="w-full px-4 py-2 bg-slate-50 text-slate-900 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition-colors"
-                    placeholder="Describe why this campaign is important..."
+                    placeholder="Write details about your campaign story and goals..."
                   ></textarea>
                 </div>
               </div>
@@ -262,17 +297,17 @@ export default function DashboardOverview() {
               <div className="pt-4 flex justify-end gap-3 border-t border-slate-100">
                 <button 
                   type="button" onClick={() => setIsModalOpen(false)}
-                  className="px-5 py-2 text-slate-600 font-bold hover:bg-slate-100 rounded-lg transition"
+                  className="px-5 py-2 text-slate-600 font-bold hover:bg-slate-100 rounded-lg transition cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button 
                   type="submit" disabled={isSubmitting}
-                  className="px-6 py-2 bg-emerald-600 text-white font-bold rounded-lg hover:bg-emerald-700 transition flex items-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed shadow-md"
+                  className="px-6 py-2 bg-emerald-600 text-white font-bold rounded-lg hover:bg-emerald-700 transition flex items-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed shadow-md cursor-pointer"
                 >
                   {isSubmitting ? (
                     <><Loader2 className="w-4 h-4 animate-spin" /> Submitting...</>
-                  ) : "Create Campaign"}
+                  ) : "Add Campaign"}
                 </button>
               </div>
 
