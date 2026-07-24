@@ -1,102 +1,201 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import Link from "next/link";
+import { useState, useContext } from "react";
+import { AuthContext } from "@/context/AuthProvider";
+import { useRouter } from "next/navigation";
+import { PlusCircle, Image, DollarSign, Calendar, Tag, FileText, User, Mail } from "lucide-react";
 
-export default function CampaignsPage() {
-  const [campaigns, setCampaigns] = useState([]);
-  const [loading, setLoading] = useState(true);
+export default function AddCampaignPage() {
+  const { user } = useContext(AuthContext);
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    const fetchCampaigns = async () => {
-      try {
-        const res = await fetch("http://localhost:5000/campaigns");
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
 
-        if (!res.ok) {
-          throw new Error(`HTTP Error: ${res.status}`);
-        }
+    const form = e.target;
+    const title = form.title.value;
+    const category = form.category.value;
+    const image = form.image.value;
+    const minDonation = parseFloat(form.minDonation.value);
+    const deadline = form.deadline.value;
+    const description = form.description.value;
 
-        const data = await res.json();
-        setCampaigns(data);
-      } catch (error) {
-        console.error("Failed to fetch campaigns:", error);
-      } finally {
-        setLoading(false);
-      }
+    const newCampaign = {
+      title,
+      category,
+      image,
+      minDonation,
+      deadline,
+      description,
+      creator_name: user?.displayName || "Anonymous Creator",
+      creator_email: user?.email || "creator@gmail.com",
+      raised_amount: 0,
     };
 
-    fetchCampaigns();
-  }, []);
+    try {
+      const res = await fetch("http://localhost:5000/campaigns", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newCampaign),
+      });
 
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="h-12 w-12 animate-spin rounded-full border-b-2 border-blue-600"></div>
-      </div>
-    );
-  }
+      const data = await res.json();
+      if (res.ok) {
+        alert("Campaign added successfully!");
+        router.push("/explore");
+      } else {
+        alert(data.message || "Failed to add campaign");
+      }
+    } catch (error) {
+      console.error("Error adding campaign:", error);
+      alert("Something went wrong!");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 py-10 px-6">
-      <div className="max-w-6xl mx-auto">
-        <h1 className="text-3xl font-bold text-center mb-8">
-          All Campaigns ({campaigns.length})
-        </h1>
-
-        {campaigns.length === 0 ? (
-          <p className="text-center text-gray-500">
-            No campaigns found.
+    <div className="min-h-screen bg-slate-50 font-sans py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+        
+        {/* Header Banner */}
+        <div className="bg-slate-900 text-white py-8 px-8 text-center relative">
+          <h1 className="text-2xl sm:text-3xl font-black tracking-tight">Start a New Campaign</h1>
+          <p className="text-xs sm:text-sm text-slate-300 mt-1">
+            Fill out the form below to launch your project and start raising funds.
           </p>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {campaigns.map((campaign) => (
-              <div
-                key={campaign._id}
-                className="bg-white rounded-lg shadow-md overflow-hidden"
+        </div>
+
+        {/* Form Body */}
+        <form onSubmit={handleSubmit} className="p-6 sm:p-10 space-y-6">
+          
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            
+            {/* Campaign Title */}
+            <div>
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">
+                Campaign Title
+              </label>
+              <input
+                type="text"
+                name="title"
+                required
+                placeholder="e.g. Portable AI Translator Earbuds"
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all"
+              />
+            </div>
+
+            {/* Category */}
+            <div>
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">
+                Category
+              </label>
+              <select
+                name="category"
+                required
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all cursor-pointer"
               >
-                {campaign.image && (
-                  <img
-                    src={campaign.image}
-                    alt={campaign.title}
-                    className="w-full h-48 object-cover"
-                  />
-                )}
+                <option value="Technology">Technology</option>
+                <option value="Health">Health</option>
+                <option value="Community">Community</option>
+                <option value="Education">Education</option>
+                <option value="Design">Design</option>
+              </select>
+            </div>
 
-                <div className="p-5">
-                  <span className="bg-indigo-100 text-indigo-700 text-xs px-2 py-1 rounded">
-                    {campaign.category}
-                  </span>
-
-                  <h2 className="text-xl font-bold mt-3">
-                    {campaign.title}
-                  </h2>
-
-                  <p className="text-gray-600 mt-2 line-clamp-2">
-                    {campaign.description}
-                  </p>
-
-                  <div className="flex justify-between items-center mt-5">
-                    <div>
-                      <p className="text-sm text-gray-500">
-                        Minimum Donation
-                      </p>
-                      <p className="font-bold text-indigo-600">
-                        ${campaign.minDonation}
-                      </p>
-                    </div>
-
-                    <Link
-                      href={`/campaigns/${campaign._id}`}
-                      className="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700"
-                    >
-                      See More
-                    </Link>
-                  </div>
-                </div>
-              </div>
-            ))}
           </div>
-        )}
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            
+            {/* Image URL */}
+            <div>
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">
+                Image URL
+              </label>
+              <input
+                type="url"
+                name="image"
+                required
+                placeholder="https://images.unsplash.com/..."
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all"
+              />
+            </div>
+
+            {/* Minimum Donation / Goal */}
+            <div>
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">
+                Minimum Donation Amount ($)
+              </label>
+              <input
+                type="number"
+                name="minDonation"
+                required
+                placeholder="100"
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all"
+              />
+            </div>
+
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            
+            {/* Deadline */}
+            <div>
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">
+                Deadline
+              </label>
+              <input
+                type="date"
+                name="deadline"
+                required
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all"
+              />
+            </div>
+
+            {/* User Info (Read-only from Auth) */}
+            <div>
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">
+                User Email (Logged in)
+              </label>
+              <input
+                type="email"
+                disabled
+                value={user?.email || "user@gmail.com"}
+                className="w-full bg-slate-100 border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-500 cursor-not-allowed"
+              />
+            </div>
+
+          </div>
+
+          {/* Description */}
+          <div>
+            <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">
+              Description
+            </label>
+            <textarea
+              name="description"
+              required
+              rows="5"
+              placeholder="Write details about your campaign story and goals..."
+              className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all"
+            ></textarea>
+          </div>
+
+          {/* Submit Button */}
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 px-6 rounded-xl uppercase tracking-wider text-xs transition-colors shadow-sm flex items-center justify-center gap-2"
+          >
+            {loading ? "Adding Campaign..." : "Add Campaign"}
+          </button>
+
+        </form>
+
       </div>
     </div>
   );

@@ -2,10 +2,7 @@
 
 import Link from "next/link";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Autoplay, Pagination, Navigation, EffectFade } from "swiper/modules";
-
-import { ArrowRight, CheckCircle2, TrendingUp, Users, ShieldCheck, Award } from "lucide-react";
-
+import { Autoplay, Pagination, EffectFade } from "swiper/modules";
 import { motion } from "framer-motion";
 import TopCampaignsSection from "@/components/TopCampaigns";
 import WeHelpSection from "@/components/WeHelpSection";
@@ -15,7 +12,6 @@ import CallToAction from "@/components/CallToAction";
 // Swiper styles
 import "swiper/css";
 import "swiper/css/pagination";
-import "swiper/css/navigation";
 import "swiper/css/effect-fade";
 
 const slides = [
@@ -25,7 +21,7 @@ const slides = [
     title: "Raising Money Has Never Been Easy",
     subtitle: "Discover projects just for you and get great recommendations when you select your interests.",
     buttonText: "EXPLORE PROJECTS",
-    buttonLink: "/explore-campaigns",
+    buttonLink: "/explore",
   },
   {
     bgImage: "https://images.unsplash.com/photo-1531482615713-2afd69097998?q=80&w=2070&auto=format&fit=crop",
@@ -33,7 +29,15 @@ const slides = [
     title: "Turn Your Vision Into Reality",
     subtitle: "Launch your campaign, connect with global supporters, and raise funds securely.",
     buttonText: "START A CAMPAIGN",
-    buttonLink: "/dashboard/add-campaign",
+    buttonLink: "/add-campaign",
+  },
+  {
+    bgImage: "https://images.unsplash.com/photo-1552664730-d307ca884978?q=80&w=2070&auto=format&fit=crop",
+    badge: "COMMUNITY IMPACT",
+    title: "Make Every Contribution Count",
+    subtitle: "Support causes you care about, from community projects to technological innovations.",
+    buttonText: "EXPLORE CAMPAIGNS",
+    buttonLink: "/explore",
   },
 ];
 
@@ -41,19 +45,20 @@ export default function Home() {
   return (
     <div className="flex flex-col min-h-screen bg-white dark:bg-zinc-950 font-sans text-slate-900 dark:text-slate-100 w-full overflow-hidden">
 
-      {/* 1. Hero Section (Inspiried by your design) */}
-      <section className="w-full h-[calc(100vh-80px)] min-h-[550px] relative">
+      {/* 1. Hero Section (Compact & Optimized) */}
+      <section className="w-full h-[480px] sm:h-[520px] relative">
         <Swiper
           spaceBetween={0}
-          effect="fade"
+          effect="effect-fade"
           centeredSlides={true}
           autoplay={{
             delay: 4500,
             disableOnInteraction: false,
           }}
           pagination={{ clickable: true }}
-          navigation={true}
-          modules={[Autoplay, Pagination, Navigation, EffectFade]}
+          modules={[Autoplay, Pagination, EffectFade]}
+          fadeEffect={{ crossFade: true }}
+          loop={true}
           className="w-full h-full hero-swiper"
         >
           {slides.map((slide, index) => (
@@ -63,30 +68,30 @@ export default function Home() {
                 style={{ backgroundImage: `url(${slide.bgImage})` }}
               >
                 {/* Dark Overlay */}
-                <div className="absolute inset-0 bg-slate-900/75 backdrop-blur-[1px]"></div>
+                <div className="absolute inset-0 bg-slate-950/80"></div>
 
                 {/* Content */}
-                <div className="relative z-10 max-w-4xl mx-auto px-6 text-center text-white flex flex-col items-center">
+                <div className="relative z-10 max-w-2xl mx-auto px-4 sm:px-6 text-center text-white flex flex-col items-center">
 
                   {/* Top Badge */}
-                  <div className="inline-block bg-emerald-500 text-zinc-950 font-bold text-xs sm:text-sm uppercase tracking-wider px-5 py-1.5 rounded-sm shadow-md mb-6 transform -skew-x-6">
-                    <span className="transform skew-x-6">{slide.badge}</span>
-                  </div>
+                  <span className="inline-block bg-emerald-500 text-white text-[11px] font-bold uppercase tracking-wider px-3.5 py-1 rounded-md mb-3 shadow-sm">
+                    {slide.badge}
+                  </span>
 
                   {/* Title */}
-                  <h1 className="text-4xl sm:text-6xl md:text-7xl font-extrabold tracking-tight leading-tight mb-6">
+                  <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight leading-tight mb-3">
                     {slide.title}
                   </h1>
 
                   {/* Subtitle */}
-                  <p className="text-base sm:text-xl text-slate-200 max-w-2xl font-normal leading-relaxed mb-8">
+                  <p className="text-xs sm:text-sm text-slate-300 max-w-lg font-normal leading-relaxed mb-6">
                     {slide.subtitle}
                   </p>
 
-                  {/* Yellow CTA Button */}
+                  {/* CTA Button */}
                   <Link
                     href={slide.buttonLink}
-                    className="inline-flex items-center gap-2 px-8 py-3.5 bg-amber-400 hover:bg-amber-300 text-zinc-950 font-bold text-sm uppercase tracking-wider rounded-md shadow-lg transition-all hover:scale-105 active:scale-95"
+                    className="inline-flex items-center gap-2 px-6 py-2.5 bg-amber-400 hover:bg-amber-300 text-zinc-950 font-bold text-xs uppercase tracking-wider rounded-lg shadow-md transition-all hover:scale-105 active:scale-95"
                   >
                     {slide.buttonText}
                   </Link>
@@ -101,10 +106,8 @@ export default function Home() {
       {/* 2. Top Funded Campaigns Section */}
       <TopCampaignsSection />
 
-      {/* 3. Impact/Counter Section (Light Yellow Matching image_157f38.png) */}
+      {/* 3. Impact/Counter Section */}
       <section className="w-full bg-[#fce060] py-16 md:py-24 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
-
-        {/* Optional: Faint Background Pattern (mimicking the raised hands vibe with a subtle gradient/opacity) */}
         <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-white to-transparent pointer-events-none"></div>
 
         <div className="max-w-7xl mx-auto relative z-10">
@@ -169,13 +172,8 @@ export default function Home() {
 
       {/* 4. We Help at Every Step Section */}
       <WeHelpSection />
-      <Testimonials/>
-
+      <Testimonials />
       <CallToAction />
-
-
-
-
 
     </div>
   );
