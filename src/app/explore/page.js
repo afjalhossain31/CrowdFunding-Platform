@@ -1,17 +1,21 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { Clock } from "lucide-react";
 
-export default function ExplorePage() {
+function ExploreContent() {
   const [campaigns, setCampaigns] = useState([]);
   const [loading, setLoading] = useState(true);
   const [sortOption, setSortOption] = useState("default");
   
+  const searchParams = useSearchParams();
+  const selectedCategory = searchParams.get("category");
+
   // Pagination States
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 8; // প্রতি পেজে ৮টি করে দেখাবে (TopCampaigns এর মতো)
+  const itemsPerPage = 8;
 
   useEffect(() => {
     fetch("http://localhost:5000/campaigns")
@@ -26,8 +30,17 @@ export default function ExplorePage() {
       });
   }, []);
 
+  // Category Filtering Logic
+  const filteredCampaigns = selectedCategory
+    ? campaigns.filter(
+        (camp) =>
+          camp.category &&
+          camp.category.toLowerCase() === selectedCategory.toLowerCase()
+      )
+    : campaigns;
+
   // Sorting logic
-  const sortedCampaigns = [...campaigns].sort((a, b) => {
+  const sortedCampaigns = [...filteredCampaigns].sort((a, b) => {
     if (sortOption === "price-low") {
       return (a.minDonation || 0) - (b.minDonation || 0);
     } else if (sortOption === "price-high") {
@@ -53,20 +66,23 @@ export default function ExplorePage() {
         <div className="absolute inset-0 bg-gradient-to-r from-slate-950/80 to-slate-900/80"></div>
 
         <div className="relative z-10 max-w-4xl mx-auto">
-          <h1 className="text-4xl md:text-5xl font-black tracking-tight mb-3">Explore Campaigns</h1>
+          <h1 className="text-4xl md:text-5xl font-black tracking-tight mb-3">
+            {selectedCategory ? `${selectedCategory} Campaigns` : "Explore All Campaigns"}
+          </h1>
           <p className="text-sm md:text-base text-slate-300 font-medium">
-            <Link href="/" className="hover:text-emerald-400 transition">Home</Link> <span className="mx-2">/</span> <span className="text-emerald-400">Explore</span>
+            <Link href="/" className="hover:text-emerald-400 transition">Home</Link> <span className="mx-2">/</span> <span className="text-emerald-400">{selectedCategory ? selectedCategory : "Explore"}</span>
           </p>
         </div>
       </div>
 
-      {/* Main Content Wrapper (TopCampaigns এর মতো max-w-7xl এবং সঠিক padding) */}
+      {/* Main Content Wrapper */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
         {/* 2. Results Count & Sorting Bar */}
         <div className="flex flex-col sm:flex-row justify-between items-center mb-10 pb-4 border-b border-slate-200 gap-4">
           <p className="text-sm text-slate-500">
             Showing <span className="font-bold text-slate-800">{sortedCampaigns.length > 0 ? indexOfFirstItem + 1 : 0}–{Math.min(indexOfLastItem, sortedCampaigns.length)}</span> of {sortedCampaigns.length} results
+            {selectedCategory && <span className="ml-2 text-emerald-600 font-semibold">(Filtered by {selectedCategory})</span>}
           </p>
 
           <div className="flex items-center gap-2">
@@ -83,14 +99,17 @@ export default function ExplorePage() {
           </div>
         </div>
 
-        {/* 3. Campaigns Grid (TopCampaigns এর হুবহু ডিজাইন ও গ্যাপ) */}
+        {/* 3. Campaigns Grid */}
         {loading ? (
           <div className="text-center py-20 flex justify-center items-center">
             <span className="loading loading-spinner loading-lg text-emerald-600"></span>
           </div>
         ) : currentCampaigns.length === 0 ? (
           <div className="text-center py-20 bg-white rounded-md border border-slate-200 shadow-sm">
-            <p className="text-slate-500 font-medium text-lg">No campaigns available at the moment.</p>
+            <p className="text-slate-500 font-medium text-lg">No campaigns available in this category.</p>
+            <Link href="/explore" className="inline-block mt-4 text-emerald-600 font-semibold text-sm hover:underline">
+              View All Campaigns →
+            </Link>
           </div>
         ) : (
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
@@ -104,7 +123,7 @@ export default function ExplorePage() {
                   key={campaign._id}
                   className="bg-white rounded-md overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-slate-100 flex flex-col group"
                 >
-                  {/* Image Section - h-44 */}
+                  {/* Image Section */}
                   <div className="relative h-44 overflow-hidden">
                     <span className="absolute top-3 right-3 z-10 bg-white/90 text-emerald-700 text-[10px] font-bold px-2.5 py-1 rounded shadow-sm uppercase tracking-wider backdrop-blur-sm">
                       {campaign.category || "GENERAL"}
@@ -183,7 +202,6 @@ export default function ExplorePage() {
         {/* 4. Pagination Section */}
         {!loading && totalPages > 1 && (
           <div className="flex justify-center items-center gap-2 mt-16">
-            {/* Page Numbers */}
             {[...Array(totalPages)].map((_, index) => {
               const pageNum = index + 1;
               const isActive = currentPage === pageNum;
@@ -206,7 +224,6 @@ export default function ExplorePage() {
               );
             })}
 
-            {/* Next Button */}
             {currentPage < totalPages && (
               <button
                 onClick={() => {
@@ -223,5 +240,13 @@ export default function ExplorePage() {
 
       </div>
     </div>
+  );
+}
+
+export default function ExplorePage() {
+  return (
+    <Suspense fallback={<div className="text-center py-20">Loading...</div>}>
+      <ExploreContent />
+    </Suspense>
   );
 }

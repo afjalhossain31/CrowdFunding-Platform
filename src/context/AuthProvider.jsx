@@ -37,7 +37,8 @@ export default function AuthProvider({ children }) {
     return signInWithPopup(auth, googleProvider);
   };
 
-  const logout = () => {
+  // Navbar এ logOut নামে কল করা হচ্ছে, তাই এখানেও logOut রাখা হলো
+  const logOut = () => {
     setLoading(true);
     return signOut(auth);
   };
@@ -63,7 +64,7 @@ export default function AuthProvider({ children }) {
     createUser,
     loginUser,
     loginWithGoogle,
-    logout,
+    logOut, // এখানে logOut পাস করা হলো
     updateUserProfile,
   };
 
