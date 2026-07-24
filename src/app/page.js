@@ -10,6 +10,7 @@ import { motion } from "framer-motion";
 import TopCampaignsSection from "@/components/TopCampaigns";
 import WeHelpSection from "@/components/WeHelpSection";
 import Testimonials from "@/components/Testimonials";
+import CallToAction from "@/components/CallToAction"; 
 
 // Swiper styles
 import "swiper/css";
@@ -169,6 +170,8 @@ export default function Home() {
       {/* 4. We Help at Every Step Section */}
       <WeHelpSection />
       <Testimonials/>
+
+      <CallToAction />
 
 
 

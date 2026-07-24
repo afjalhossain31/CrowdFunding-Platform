@@ -18,7 +18,7 @@ export default function NotFound() {
         </h1>
 
         <h2 className="text-3xl md:text-4xl font-extrabold text-gray-800 mt-2 mb-4 tracking-tight">
-          Oops! You're lost.
+          Oops! You are lost.
         </h2>
         
         <p className="text-gray-500 mb-10 text-sm md:text-base max-w-md mx-auto leading-relaxed">
