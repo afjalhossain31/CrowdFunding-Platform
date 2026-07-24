@@ -1,52 +1,86 @@
+"use client";
+
+import { useContext, useEffect, useState } from "react";
 import DashboardSidebar from "@/components/DashboardSidebar";
+import { AuthContext } from "@/context/AuthProvider";
+import useRole from "@/hooks/useRole";
+import axios from "axios";
+import { Bell, Coins, User as UserIcon } from "lucide-react";
 
 export default function DashboardLayout({ children }) {
+  const { user } = useContext(AuthContext);
+  const { role } = useRole();
+  const [credits, setCredits] = useState(0);
+
+  // ইউজারের ক্রেডিট ডাটাবেস থেকে নিয়ে আসার জন্য
+  useEffect(() => {
+    if (user?.email) {
+      axios
+        .get(`http://localhost:5000/users/${user.email}`)
+        .then((res) => setCredits(res.data?.credits || 0))
+        .catch((err) => console.error("Failed to fetch credits:", err));
+    }
+  }, [user]);
+
   return (
-    <div className="flex min-h-screen bg-[#f8f9fc] font-sans">
+    <div className="flex min-h-screen bg-slate-50 font-sans">
       {/* Sidebar - Fixed to the left */}
       <DashboardSidebar />
 
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
         
-        {/* Topbar updated for Crowdfund */}
-        <header className="h-20 px-8 flex items-center justify-between bg-[#f8f9fc]">
-          <h2 className="text-xl font-bold text-gray-800">
-            Welcome to <span className="text-blue-600">Crowdfund</span>
+        {/* Topbar updated for Crowdfund with Emerald Theme */}
+        <header className="h-20 px-6 md:px-8 flex items-center justify-between bg-white border-b border-slate-100 z-10 sticky top-0">
+          <h2 className="text-xl font-extrabold text-slate-800">
+            Welcome to <span className="text-emerald-600">Crowdfund</span>
           </h2>
           
-          <div className="flex items-center gap-6">
+          <div className="flex items-center gap-4 md:gap-6">
             
-            {/* Available Credits Display (As per requirement) */}
-            <div className="hidden md:flex items-center gap-2 bg-blue-50 text-blue-700 px-4 py-2 rounded-full font-semibold text-sm border border-blue-100">
-              🪙 Available Credits: 120
+            {/* Available Credits Display (Dynamic) */}
+            <div className="hidden md:flex items-center gap-2 bg-emerald-50 text-emerald-700 px-4 py-2 rounded-full font-bold text-sm border border-emerald-200 shadow-sm transition-all hover:bg-emerald-100">
+              <Coins className="w-4 h-4 text-emerald-500" />
+              Available Credits: {credits}
             </div>
             
             {/* Notification Icon */}
             <div className="flex items-center gap-3">
-              <button className="relative w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-sm text-gray-400 hover:text-gray-600 transition">
-                🔔
+              <button className="relative w-10 h-10 bg-slate-50 rounded-full flex items-center justify-center shadow-sm text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 border border-slate-100 transition-colors">
+                <Bell className="w-5 h-5" />
                 {/* Notification Badge */}
-                <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full"></span>
+                <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-red-500 rounded-full border border-white"></span>
               </button>
             </div>
             
-            {/* User Profile */}
-            <div className="flex items-center gap-3 bg-white px-3 py-1.5 rounded-full shadow-sm cursor-pointer border border-gray-100">
-              <div className="w-8 h-8 rounded-full bg-blue-100 overflow-hidden">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="https://i.pravatar.cc/150?img=11" alt="User Profile" className="w-full h-full object-cover" />
+            {/* User Profile (Dynamic) */}
+            <div className="flex items-center gap-3 bg-slate-50 px-3 py-1.5 rounded-full shadow-sm cursor-pointer border border-slate-100 hover:border-emerald-200 transition-colors">
+              <div className="w-8 h-8 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center overflow-hidden border border-emerald-200">
+                {user?.photoURL ? (
+                  <img 
+                    src={user.photoURL} 
+                    alt="User Profile" 
+                    className="w-full h-full object-cover" 
+                  />
+                ) : (
+                  <UserIcon className="w-5 h-5" />
+                )}
               </div>
-              <div className="flex flex-col pr-2">
-                <span className="text-sm font-semibold text-gray-700 leading-tight">Jimmy Martin</span>
-                <span className="text-[10px] text-gray-500 font-medium">Creator</span>
+              <div className="hidden md:flex flex-col pr-2">
+                <span className="text-sm font-bold text-slate-700 leading-tight truncate max-w-[120px]">
+                  {user?.displayName || "Loading..."}
+                </span>
+                <span className="text-[10px] text-emerald-600 font-bold uppercase tracking-wider">
+                  {role || "Supporter"}
+                </span>
               </div>
             </div>
+
           </div>
         </header>
 
         {/* Dynamic Page Content Area */}
-        <main className="flex-1 overflow-y-auto p-8 pt-0">
+        <main className="flex-1 overflow-y-auto p-6 md:p-8 bg-slate-50 custom-scrollbar">
           {children}
         </main>
       </div>

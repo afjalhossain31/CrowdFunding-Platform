@@ -1,7 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 require("dotenv").config();
-const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb"); // <-- ObjectId এখানে যুক্ত করা হয়েছে
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -9,7 +9,7 @@ const port = process.env.PORT || 5000;
 // Middleware
 app.use(
     cors({
-        origin: "http://localhost:3000",
+        origin: ["http://localhost:3000", "http://localhost:5173"], // ফ্রন্টএন্ডের পোর্ট অ্যাড করা হয়েছে
         credentials: true,
     })
 );
@@ -74,10 +74,29 @@ async function run() {
         // Campaign Routes
         // =========================
 
-        // Create Campaign
+        // Create Campaign (Updated to match frontend structure)
         app.post("/campaigns", async (req, res) => {
-            const campaign = req.body;
-            const result = await campaignsCollection.insertOne(campaign);
+            const campaignData = req.body;
+            
+            // ডাটাবেসে সেভ করার সময় ফিল্ডের নামগুলো স্ট্যান্ডার্ড করে দেওয়া হলো 
+            // যাতে হোমপেজে (TopCampaigns) ঠিকমতো ডেটা শো করে
+            const newCampaign = {
+                title: campaignData.title,
+                category: campaignData.category,
+                minDonation: campaignData.goal, // Frontend থেকে goal হিসেবে আসছে
+                funding_goal: campaignData.goal, 
+                deadline: campaignData.deadline,
+                image: campaignData.image, // Frontend থেকে image হিসেবে আসছে
+                campaign_image_url: campaignData.image,
+                description: campaignData.description,
+                creator_name: campaignData.creatorName,
+                creator_email: campaignData.creatorEmail,
+                raised_amount: campaignData.raisedAmount || 0,
+                status: campaignData.status || "active",
+                createdAt: campaignData.createdAt || new Date().toISOString(),
+            };
+
+            const result = await campaignsCollection.insertOne(newCampaign);
             res.send(result);
         });
 
@@ -87,7 +106,7 @@ async function run() {
             res.send(result);
         });
 
-        // Top Campaigns
+        // Top Campaigns (Based on raised amount)
         app.get("/campaigns/top", async (req, res) => {
             const result = await campaignsCollection
                 .find()
@@ -97,11 +116,10 @@ async function run() {
             res.send(result);
         });
 
-        // Get a Single Campaign by ID (ডাইনামিক ডিটেইলস পেজের জন্য)
+        // Get a Single Campaign by ID
         app.get("/campaigns/:id", async (req, res) => {
             const id = req.params.id;
             try {
-                // চেক করা হচ্ছে আইডিটি সঠিক ফরম্যাটের কি না
                 if (!ObjectId.isValid(id)) {
                     return res.status(400).send({ error: "Invalid Campaign ID" });
                 }
@@ -117,7 +135,9 @@ async function run() {
             }
         });
 
-        // Root
+        // =========================
+        // Root & DB Ping
+        // =========================
         app.get("/", (req, res) => {
             res.send("🚀 Crowdfunding Server is Running");
         });
@@ -125,7 +145,7 @@ async function run() {
         await client.db("admin").command({ ping: 1 });
         console.log("✅ MongoDB Ping Successful");
     } catch (error) {
-        console.error(error);
+        console.error("MongoDB Connection Error:", error);
     }
 }
 
