@@ -11,7 +11,7 @@ import { Mail, Lock, User, Eye, EyeOff, UploadCloud, UserPlus } from "lucide-rea
 
 export default function Register() {
   const router = useRouter();
-  
+
   // ফর্মের স্টেটগুলো
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -38,7 +38,7 @@ export default function Register() {
       if (imageFile) {
         const formData = new FormData();
         formData.append("image", imageFile);
-        
+
         const imgRes = await axios.post(image_hosting_api, formData);
         if (imgRes.data.success) {
           imageUrl = imgRes.data.data.display_url;
@@ -69,11 +69,11 @@ export default function Register() {
       };
 
       // ৬. তোমার Backend API-তে ডেটা পাঠানো
-      const dbResponse = await axios.post("http://localhost:5000/users", userInfo);
+      const dbResponse = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/users`, userInfo);
 
       if (dbResponse.data.insertedId) {
-        alert("Registration Successful!"); 
-        
+        alert("Registration Successful!");
+
         // ৭. লগইন পেজে পাঠিয়ে দেওয়া
         router.push("/login");
       }
@@ -88,12 +88,12 @@ export default function Register() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-slate-50 relative overflow-hidden p-4 py-12">
-      
+
       {/* Background Decorative Elements */}
       <div className="absolute top-[0%] left-[-10%] w-96 h-96 bg-emerald-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-pulse"></div>
       <div className="absolute bottom-[0%] right-[-10%] w-96 h-96 bg-emerald-300 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-pulse" style={{ animationDelay: '2s' }}></div>
 
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
@@ -121,7 +121,7 @@ export default function Register() {
         )}
 
         <form onSubmit={handleRegister} className="space-y-5">
-          
+
           {/* Name Field */}
           <div>
             <label className="block text-sm font-semibold text-slate-700 mb-1.5">Full Name</label>
@@ -205,12 +205,11 @@ export default function Register() {
             <label className="block text-sm font-semibold text-slate-700 mb-2">Select Your Role</label>
             <div className="grid grid-cols-2 gap-4">
               {/* Supporter Radio Card */}
-              <label 
-                className={`flex items-center justify-center py-3 px-4 border rounded-xl cursor-pointer transition-all duration-200 ${
-                  role === "Supporter" 
-                    ? "bg-emerald-50 border-emerald-500 text-emerald-700 font-bold shadow-sm" 
+              <label
+                className={`flex items-center justify-center py-3 px-4 border rounded-xl cursor-pointer transition-all duration-200 ${role === "Supporter"
+                    ? "bg-emerald-50 border-emerald-500 text-emerald-700 font-bold shadow-sm"
                     : "bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100"
-                }`}
+                  }`}
               >
                 <input
                   type="radio"
@@ -224,12 +223,11 @@ export default function Register() {
               </label>
 
               {/* Creator Radio Card */}
-              <label 
-                className={`flex items-center justify-center py-3 px-4 border rounded-xl cursor-pointer transition-all duration-200 ${
-                  role === "Creator" 
-                    ? "bg-emerald-50 border-emerald-500 text-emerald-700 font-bold shadow-sm" 
+              <label
+                className={`flex items-center justify-center py-3 px-4 border rounded-xl cursor-pointer transition-all duration-200 ${role === "Creator"
+                    ? "bg-emerald-50 border-emerald-500 text-emerald-700 font-bold shadow-sm"
                     : "bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100"
-                }`}
+                  }`}
               >
                 <input
                   type="radio"
