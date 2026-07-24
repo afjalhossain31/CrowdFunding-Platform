@@ -9,7 +9,7 @@ const port = process.env.PORT || 5000;
 // Middleware
 app.use(
     cors({
-        origin: ["http://localhost:3000", "http://localhost:5173"],
+        origin: ["http://localhost:3000", "http://localhost:5173", "https://your-frontend-domain.vercel.app"],
         credentials: true,
     })
 );
@@ -34,6 +34,13 @@ async function run() {
         const db = client.db("CrowdFunding");
         const usersCollection = db.collection("users");
         const campaignsCollection = db.collection("campaigns");
+
+        // =========================
+        // Root Route
+        // =========================
+        app.get("/", (req, res) => {
+            res.send("🚀 Crowdfunding Server is Running");
+        });
 
         // =========================
         // User Routes
@@ -74,7 +81,7 @@ async function run() {
         // Campaign Routes
         // =========================
 
-        // Create Campaign (Updated & Standardized)
+        // 1. Create Campaign
         app.post("/campaigns", async (req, res) => {
             try {
                 const campaignData = req.body;
@@ -103,7 +110,7 @@ async function run() {
             }
         });
 
-        // Top Campaigns (Based on raised amount) - Note: keep this BEFORE /campaigns/:id
+        // 2. Top Campaigns (⚠️ গুরুত্বপূর্ণ: এটি অবশ্যই /campaigns/:id এর উপরে থাকতে হবে)
         app.get("/campaigns/top", async (req, res) => {
             try {
                 const result = await campaignsCollection
@@ -117,7 +124,7 @@ async function run() {
             }
         });
 
-        // Get All Campaigns
+        // 3. Get All Campaigns
         app.get("/campaigns", async (req, res) => {
             try {
                 const result = await campaignsCollection.find().toArray();
@@ -127,7 +134,7 @@ async function run() {
             }
         });
 
-        // Get a Single Campaign by ID
+        // 4. Get a Single Campaign by ID
         app.get("/campaigns/:id", async (req, res) => {
             const id = req.params.id;
             try {
@@ -144,13 +151,6 @@ async function run() {
             } catch (error) {
                 res.status(500).send({ error: "Server error while fetching campaign" });
             }
-        });
-
-        // =========================
-        // Root & DB Ping
-        // =========================
-        app.get("/", (req, res) => {
-            res.send("🚀 Crowdfunding Server is Running");
         });
 
         await client.db("admin").command({ ping: 1 });
