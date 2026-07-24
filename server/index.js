@@ -9,7 +9,7 @@ const port = process.env.PORT || 5000;
 // Middleware
 app.use(
     cors({
-        origin: ["http://localhost:3000", "http://localhost:5173"], // ফ্রন্টএন্ডের পোর্ট অ্যাড করা হয়েছে
+        origin: ["http://localhost:3000", "http://localhost:5173"],
         credentials: true,
     })
 );
@@ -74,46 +74,57 @@ async function run() {
         // Campaign Routes
         // =========================
 
-        // Create Campaign (Updated to match frontend structure)
+        // Create Campaign (Updated & Standardized)
         app.post("/campaigns", async (req, res) => {
-            const campaignData = req.body;
-            
-            // ডাটাবেসে সেভ করার সময় ফিল্ডের নামগুলো স্ট্যান্ডার্ড করে দেওয়া হলো 
-            // যাতে হোমপেজে (TopCampaigns) ঠিকমতো ডেটা শো করে
-            const newCampaign = {
-                title: campaignData.title,
-                category: campaignData.category,
-                minDonation: campaignData.goal, // Frontend থেকে goal হিসেবে আসছে
-                funding_goal: campaignData.goal, 
-                deadline: campaignData.deadline,
-                image: campaignData.image, // Frontend থেকে image হিসেবে আসছে
-                campaign_image_url: campaignData.image,
-                description: campaignData.description,
-                creator_name: campaignData.creatorName,
-                creator_email: campaignData.creatorEmail,
-                raised_amount: campaignData.raisedAmount || 0,
-                status: campaignData.status || "active",
-                createdAt: campaignData.createdAt || new Date().toISOString(),
-            };
+            try {
+                const campaignData = req.body;
+                
+                const newCampaign = {
+                    title: campaignData.title,
+                    category: campaignData.category,
+                    minDonation: Number(campaignData.minDonation || campaignData.goal || 0),
+                    funding_goal: Number(campaignData.funding_goal || campaignData.minDonation || campaignData.goal || 0),
+                    deadline: campaignData.deadline,
+                    image: campaignData.image,
+                    campaign_image_url: campaignData.image,
+                    description: campaignData.description,
+                    creator_name: campaignData.creator_name || campaignData.creatorName || "Anonymous Creator",
+                    creator_email: campaignData.creator_email || campaignData.creatorEmail || "user@gmail.com",
+                    raised_amount: Number(campaignData.raised_amount || 0),
+                    status: campaignData.status || "active",
+                    createdAt: campaignData.createdAt || new Date().toISOString(),
+                };
 
-            const result = await campaignsCollection.insertOne(newCampaign);
-            res.send(result);
+                const result = await campaignsCollection.insertOne(newCampaign);
+                res.send(result);
+            } catch (error) {
+                console.error("Error creating campaign:", error);
+                res.status(500).send({ error: "Failed to create campaign" });
+            }
+        });
+
+        // Top Campaigns (Based on raised amount) - Note: keep this BEFORE /campaigns/:id
+        app.get("/campaigns/top", async (req, res) => {
+            try {
+                const result = await campaignsCollection
+                    .find()
+                    .sort({ raised_amount: -1 })
+                    .limit(8)
+                    .toArray();
+                res.send(result);
+            } catch (error) {
+                res.status(500).send({ error: "Failed to fetch top campaigns" });
+            }
         });
 
         // Get All Campaigns
         app.get("/campaigns", async (req, res) => {
-            const result = await campaignsCollection.find().toArray();
-            res.send(result);
-        });
-
-        // Top Campaigns (Based on raised amount)
-        app.get("/campaigns/top", async (req, res) => {
-            const result = await campaignsCollection
-                .find()
-                .sort({ raised_amount: -1 })
-                .limit(8)
-                .toArray();
-            res.send(result);
+            try {
+                const result = await campaignsCollection.find().toArray();
+                res.send(result);
+            } catch (error) {
+                res.status(500).send({ error: "Failed to fetch campaigns" });
+            }
         });
 
         // Get a Single Campaign by ID
