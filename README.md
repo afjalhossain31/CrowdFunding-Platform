@@ -3,8 +3,8 @@
 # About
 A full-stack crowdfunding platform where creators launch campaigns, supporters back them with credits, and admins manage the ecosystem. Built with Next.js, JavaScript, Express, MongoDB & Firebase Auth — role-based dashboards, Stripe payments, real-time notifications.
 
-🔗 **Live Site:** [your-live-site-url-here](#)   
-🔗 **Client / Server Repo:** [https://github.com/afjalhossain31/CrowdFunding-Platform](#)  
+[![Live Site](https://img.shields.io/badge/Live%20Site-Visit-brightgreen?style=for-the-badge)](#)
+[![GitHub Repo](https://img.shields.io/badge/GitHub-Repository-181717?style=for-the-badge&logo=github)](https://github.com/afjalhossain31/CrowdFunding-Platform) 
 
 ### 🔑 Admin Credentials
 - **Email:** admin@fundrise.com
